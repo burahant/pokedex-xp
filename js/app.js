@@ -15,8 +15,45 @@
   /* ---------- language ---------- */
   function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { } }
+  /* ---------- sound (synthesised with Web Audio — no audio files, no copyrighted samples) ---------- */
+  var SND = (function () {
+    var ctx = null, on = lsGet('za_snd') !== '0', master = null;
+    function ac() {
+      if (ctx) return ctx;
+      var C = window.AudioContext || window.webkitAudioContext; if (!C) return null;
+      try { ctx = new C(); master = ctx.createGain(); master.gain.value = .5; master.connect(ctx.destination); } catch (e) { ctx = null; }
+      return ctx;
+    }
+    function tone(f, t0, d, type, vol, f2) {
+      var c = ac(); if (!c) return; var o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+      o.type = type || 'sine'; o.frequency.setValueAtTime(f, t); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + d);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .2, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + d + .05);
+    }
+    function ok() { if (!on) return false; var c = ac(); if (!c) return false; if (c.state === 'suspended') c.resume(); return c.state !== 'closed'; }
+    var N = { C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880, B5: 987.77, C6: 1046.5, E6: 1318.5, G6: 1568, C4: 261.63, E4: 329.63, G4: 392 };
+    var S = {
+      click: function () { tone(1400, 0, .05, 'square', .05, 900); },
+      open: function () { tone(N.E5, 0, .09, 'triangle', .12); tone(N.A5, .07, .12, 'triangle', .12); },
+      close: function () { tone(N.A5, 0, .08, 'triangle', .1); tone(N.E5, .06, .11, 'triangle', .1); },
+      heart: function () { tone(N.G5, 0, .1, 'sine', .15); tone(N.C6, .08, .18, 'sine', .15); },
+      unheart: function () { tone(N.C6, 0, .08, 'sine', .1); tone(N.G5, .06, .12, 'sine', .1); },
+      start: function () { [[N.E5, 0, .35], [N.B5, .11, .35], [N.A5, .22, .3], [N.E6, .36, .85]].forEach(function (n) { tone(n[0], n[1], n[2], 'sine', .16); tone(n[0] * 2, n[1], n[2] * .6, 'sine', .035); }); tone(N.C4, 0, .8, 'triangle', .08); tone(N.E5, .36, .85, 'triangle', .06); tone(N.G5, .36, .85, 'triangle', .05); },
+      evoOut: function () { tone(220, 0, 1.1, 'sawtooth', .06, 2200); tone(330, 0, 1.1, 'sine', .12, 3300); tone(110, 0, 1.1, 'triangle', .1, 440); for (var k = 0; k < 8; k++) tone(1000 + k * 240, .12 + k * .105, .1, 'sine', .06); },
+      revOut: function () { tone(1800, 0, .95, 'sine', .11, 260); tone(900, 0, .95, 'triangle', .1, 130); for (var k = 0; k < 5; k++) tone(1900 - k * 240, .05 + k * .16, .12, 'triangle', .05); },
+      revIn: function () { [N.G5, N.E5, N.C5].forEach(function (f, i) { tone(f, i * .1, .7, 'sine', .12); }); tone(N.C4, 0, .8, 'triangle', .08); tone(1500, 0, .4, 'sine', .04, 600); },
+      evoIn: function () { [N.C5, N.E5, N.G5, N.C6].forEach(function (f) { tone(f, 0, 1.1, 'triangle', .13); }); tone(N.E6, .05, .9, 'sine', .1); tone(N.G6, .12, .8, 'sine', .07); tone(2400, 0, .5, 'sine', .05, 4200); }
+    };
+    return {
+      play: function (k) { if (ok() && S[k]) S[k](); },
+      isOn: function () { return on; },
+      set: function (v) { on = !!v; lsSet('za_snd', on ? '1' : '0'); if (on) { ok(); S.click(); } },
+      unlock: function () { if (on) ac(); },
+      canAutoplay: function () { if (!on) return true; var c = ac(); return !!c && c.state === 'running'; }
+    };
+  })();
   var lang = 'th';
-  var APP_VERSION = '0.6.4', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
+  var APP_VERSION = '0.8.1', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
   function B(en, th) { return lang === 'th' ? th : en; }
   function L(en, th) { return lang === 'th' ? th : en; }
   function tyName(t) { return lang === 'th' ? t + ' (' + TH_TYPE[t] + ')' : t; }
@@ -91,7 +128,7 @@
   function tyRow(types) { return '<span class="tys">' + types.map(function (t) { return tyIcon(t); }).join('') + '</span>'; }
   function mvLabel(name) {
     var m = MV[name]; if (!m) return esc(name);
-    return '<span class="mv"><img class="t" src="img/types/' + m.type.toLowerCase() + '.png" alt="' + m.type + '" title="' + tyName(m.type) + '"><img class="c" src="img/cat/' + CAT_NAME[m.cat] + '.svg" alt="' + catName(m.cat) + '" title="' + catName(m.cat) + '">' + esc(name) + '</span>';
+    return '<span class="mv"><span class="mvi"><img class="t" src="img/types/' + m.type.toLowerCase() + '.png" alt="' + m.type + '" title="' + tyName(m.type) + '"><img class="c" src="img/cat/' + CAT_NAME[m.cat] + '.svg" alt="' + catName(m.cat) + '" title="' + catName(m.cat) + '"></span><span class="mvn">' + esc(name) + '</span></span>';
   }
   var ART_URL = 'https://img.pokemondb.net/artwork/large/', HAVE_MEGA = {'abomasnow-mega':1,'absol-mega':1,'absol-mega-z':1,'aerodactyl-mega':1,'aggron-mega':1,'alakazam-mega':1,'altaria-mega':1,'ampharos-mega':1,'audino-mega':1,'banette-mega':1,'barbaracle-mega':1,'baxcalibur-mega':1,'beedrill-mega':1,'blastoise-mega':1,'blaziken-mega':1,'camerupt-mega':1,'chandelure-mega':1,'charizard-mega-x':1,'charizard-mega-y':1,'chesnaught-mega':1,'chimecho-mega':1,'clefable-mega':1,'crabominable-mega':1,'darkrai-mega':1,'delphox-mega':1,'diancie-mega':1,'dragalge-mega':1,'dragonite-mega':1,'drampa-mega':1,'eelektross-mega':1,'emboar-mega':1,'excadrill-mega':1,'falinks-mega':1,'feraligatr-mega':1,'floette-mega':1,'froslass-mega':1,'gallade-mega':1,'garchomp-mega':1,'garchomp-mega-z':1,'gardevoir-mega':1,'gengar-mega':1,'glalie-mega':1,'glimmora-mega':1,'golisopod-mega':1,'golurk-mega':1,'greninja-mega':1,'gyarados-mega':1,'hawlucha-mega':1,'heatran-mega':1,'heracross-mega':1,'houndoom-mega':1,'kangaskhan-mega':1,'latias-mega':1,'latios-mega':1,'lopunny-mega':1,'lucario-mega':1,'lucario-mega-z':1,'magearna-mega':1,'magearna-original-mega':1,'malamar-mega':1,'manectric-mega':1,'mawile-mega':1,'medicham-mega':1,'meganium-mega':1,'meowstic-female-mega':1,'meowstic-male-mega':1,'metagross-mega':1,'mewtwo-mega-x':1,'mewtwo-mega-y':1,'pidgeot-mega':1,'pinsir-mega':1,'pyroar-mega':1,'raichu-mega-x':1,'raichu-mega-y':1,'rayquaza-mega':1,'sableye-mega':1,'salamence-mega':1,'sceptile-mega':1,'scizor-mega':1,'scolipede-mega':1,'scovillain-mega':1,'scrafty-mega':1,'sharpedo-mega':1,'skarmory-mega':1,'slowbro-mega':1,'staraptor-mega':1,'starmie-mega':1,'steelix-mega':1,'swampert-mega':1,'tatsugiri-curly-mega':1,'tatsugiri-droopy-mega':1,'tatsugiri-stretchy-mega':1,'tyranitar-mega':1,'venusaur-mega':1,'victreebel-mega':1,'zeraora-mega':1,'zygarde-mega':1};
   var HAVE_F = { meowstic: 1 };
@@ -140,6 +177,7 @@
 
   function openWin(o) {
     if (wins[o.id]) { focus(o.id); return wins[o.id]; }
+    SND.play('open');
     var el = document.createElement('section');
     el.className = 'win';
     el.setAttribute('role', 'dialog');
@@ -204,7 +242,7 @@
     refreshTasks();
   }
   function closeWin(id) {
-    var w = wins[id]; if (!w) return; w.el.remove(); w.task.remove(); delete wins[id];
+    var w = wins[id]; if (!w) return; SND.play('close'); w.el.remove(); w.task.remove(); delete wins[id];
     if (activeId === id) { activeId = null; var n = topVisible(); if (n) focus(n); }
     if (id.indexOf('mon-') === 0 && location.hash.indexOf('#/mon/') === 0) history.replaceState(null, '', location.pathname + location.search);
     refreshTasks();
@@ -237,7 +275,7 @@
   function isFav(id) { return favs.indexOf(id) >= 0; }
   function heartBtn(id, cls) { var on = isFav(id); return '<button type="button" class="heart ' + cls + (on ? ' on' : '') + '" data-id="' + id + '" aria-pressed="' + on + '" title="' + (on ? 'นำออกจากรายการโปรด' : 'เพิ่มในรายการโปรด') + '">' + (on ? 'ถูกใจ' : 'ไม่ได้ถูกใจ') + '</button>'; }
   function toggleFav(id) {
-    var i = favs.indexOf(id); if (i >= 0) favs.splice(i, 1); else favs.push(id);
+    var i = favs.indexOf(id); if (i >= 0) favs.splice(i, 1); else favs.push(id); SND.play(i >= 0 ? 'unheart' : 'heart');
     lsSet('za_fav', JSON.stringify(favs));
     [].forEach.call(document.querySelectorAll('.heart[data-id="' + id + '"]'), function (el) {
       var on = isFav(id); el.classList.toggle('on', on); el.setAttribute('aria-pressed', on); el.textContent = on ? 'ถูกใจ' : 'ไม่ได้ถูกใจ'; el.title = on ? 'นำออกจากรายการโปรด' : 'เพิ่มในรายการโปรด';
@@ -249,11 +287,17 @@
   function fitLine(p, sel) { return sel ? '<span class="fit">' + p.builds[sel].fit + '% · อันดับ ' + (p.rank.indexOf(sel) + 1) + '</span>' : ''; }
   function cardHTML(p, sel) {
     return '<div class="cw"><button class="card" role="listitem" data-id="' + p.id + '" aria-label="' + esc(p.en) + '"><span class="sp">' + sprite(p, 92) + '</span><span class="no">#' + dexNo(p) + (p.sec === 'md' ? ' · DLC' : '') + '</span>' +
-      '<span class="jp">' + esc(p.jp) + ' <span style="font-weight:400">(' + esc(p.en) + ')</span></span><span class="en">' + esc(p.romaji) + '</span>' + tyRow(p.types) + fitLine(p, sel) + '</button>' + heartBtn(p.id, 'hc') + '</div>';
+      '<span class="jp">' + esc(p.jp) + '</span><span class="en">' + esc(p.romaji) + '</span><span class="enn">(' + esc(p.en) + ')</span>' + tyRow(p.types) + fitLine(p, sel) + '</button>' + heartBtn(p.id, 'hc') + '</div>';
   }
   function gridClick(e) {
     var h = e.target.closest('.heart'); if (h) { toggleFav(+h.dataset.id); return; }
+    var sh = e.target.closest('.sech[data-sec]'); if (sh) { toggleSec(sh); return; }
     var c = e.target.closest('.card'); if (c) openMon(+c.dataset.id);
+  }
+  function toggleSec(sh) {
+    var on = !sh.classList.contains('collapsed'); sh.classList.toggle('collapsed', on); sh.setAttribute('aria-expanded', on ? 'false' : 'true');
+    dexState.col[sh.dataset.sec] = on ? 1 : 0;
+    var g = sh.nextElementSibling; if (g && g.classList.contains('grid')) g.hidden = on;
   }
   function openFavs() {
     openWin({ id: 'favs', title: function () { return 'รายการโปรด'; }, icon: ico('favs'), w: 920, h: 600, render: function (w) {
@@ -266,7 +310,7 @@
   }
 
   /* ---------- Pokédex window ---------- */
-  var dexState = { q: '', type: '', build: '', sort: 'dex' };
+  var dexState = { q: '', type: '', build: '', sort: 'dex', col: {} };
   function openDex() {
     openWin({
       id: 'dex', title: function () { return 'Pokédex — ' + GAME_NAME; }, icon: ico('dex'), max: true, w: 1000, h: 640,
@@ -300,7 +344,7 @@
             var part = list.filter(function (p) { return p.sec === sc.k; }), tot = sc.to - sc.from + 1;
             nav += '<button class="btn" data-jump="' + sc.k + '"' + (part.length ? '' : ' disabled') + '>' + (sc.k === 'md' ? '✨ ' : '📖 ') + sc.name + ' <b>' + part.length + (part.length === tot ? '' : '/' + tot) + '</b></button>';
             if (!part.length) return;
-            html += '<div class="sech" id="sec-' + sc.k + '"><span class="shn">' + (sc.k === 'md' ? '✨ ' : '📖 ') + sc.name + '</span><span class="shs">' + sc.sub + ' · ' + part.length + (part.length === tot ? '' : ' / ' + tot) + ' ตัว</span></div><div class="grid">' + part.map(function (p) { return cardHTML(p, dexState.build); }).join('') + '</div>';
+            var cl = dexState.col[sc.k]; html += '<div class="sech' + (cl ? ' collapsed' : '') + '" id="sec-' + sc.k + '" data-sec="' + sc.k + '" role="button" tabindex="0" aria-expanded="' + (cl ? 'false' : 'true') + '" title="กดเพื่อหุบ/เปิด"><span class="shc">▾</span><span class="shn">' + (sc.k === 'md' ? '✨ ' : '📖 ') + sc.name + '</span><span class="shs">' + sc.sub + ' · ' + part.length + (part.length === tot ? '' : ' / ' + tot) + ' ตัว</span></div><div class="grid"' + (cl ? ' hidden' : '') + '>' + part.map(function (p) { return cardHTML(p, dexState.build); }).join('') + '</div>';
           });
           $('#secnav', w.body).innerHTML = nav;
           grid.innerHTML = list.length ? html : '<div class="empty">ไม่พบโปเกมอนที่ตรงกับ “' + esc(q.value) + '”</div>';
@@ -309,6 +353,7 @@
         q.addEventListener('input', draw); ft.addEventListener('change', draw); so.addEventListener('change', draw);
         fb.addEventListener('change', function () { if (fb.value) so.value = 'fit'; else if (so.value === 'fit') so.value = 'dex'; draw(); });
         grid.addEventListener('click', gridClick);
+        grid.addEventListener('keydown', function (e) { var sh = e.target.closest && e.target.closest('.sech[data-sec]'); if (sh && e.target === sh && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleSec(sh); } });
         w.body.addEventListener('click', function (e) {
           var b = e.target.closest('[data-open]'); if (b) { openApp(b.dataset.open); return; }
           var j = e.target.closest('[data-jump]'); if (j) { var t = $('#sec-' + j.dataset.jump, w.body); if (t) w.body.scrollTop = t.offsetTop - w.body.offsetTop - ($('.toolbar', w.body) ? 0 : 0); }
@@ -508,6 +553,22 @@
   }
   var curMonWin = null;
   function tabs() { return [['ov', '📋 ภาพรวม', tabOverview], ['evo', '🧬 วิวัฒนาการ', tabEvo], ['mv', '🎮 ท่า & ปุ่ม', tabMoves], ['ls', '📚 ท่าที่เรียนได้', tabLearn], ['mt', '⚔️ ธาตุ', tabMatch], ['tr', '🏋️ IV / EV', tabTrain]]; }
+  /* evolution effect: white-out the current art, swap form, then flash in the new one */
+  function megaFx(big) {
+    var f = document.createElement('div'); f.className = 'mfx';
+    f.innerHTML = '<i class="rays"></i><i class="orb"></i>' + [0, 1, 2, 3, 4, 5, 6, 7].map(function (n) { return '<i class="spk s' + n + '"></i>'; }).join('');
+    big.appendChild(f);
+  }
+  function megaSwap(w, to) {
+    if (w.fxBusy || (w.mega || null) === (to || null)) return;
+    var big = $('.hd .big', w.body), still = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if (!big || still) { w.mega = to; showMon(w, w.monId); return; }
+    w.fxBusy = true; megaFx(big); big.classList.add('fx-out'); SND.play(to ? 'evoOut' : 'revOut');
+    setTimeout(function () {
+      w.mega = to; w.fxBusy = false; showMon(w, w.monId);
+      var nb = $('.hd .big', w.body); SND.play(to ? 'evoIn' : 'revIn'); if (nb) { megaFx(nb); nb.classList.add('fx-in'); setTimeout(function () { nb.classList.remove('fx-in'); var f = $('.mfx', nb); if (f) f.remove(); }, 950); }
+    }, 1100);
+  }
   function showMon(w, id, tab, build) {
     curMonWin = w; var p = byId(id), keep = (w.monId === id && w.body) ? w.body.scrollTop : 0;
     if (w.monId !== id) { w.build = null; w.mega = null; }
@@ -524,8 +585,8 @@
         var f = p.builds[k].fit;
         return '<button class="bld' + (k === key ? ' on' : '') + '" data-b="' + k + '" aria-pressed="' + (k === key) + '"><span class="bn">' + MEDAL[n] + ' ' + L(ARCH[k][0], ARCH[k][1]) + '</span><span class="bf">' + RANKTXT[n] + ' · ' + f + '%</span><span class="bb"><i style="width:' + f + '%"></i></span></button>';
       }).join('') + '</div><div class="bd">' + L(ARCH_DESC[key][0], ARCH_DESC[key][1]) + '</div></div>';
-    w.body.innerHTML = '<div class="hd"><div class="big" data-n="' + dexNo(p) + '">' + (mg ? megaArt(mg.s, 200, mg.n) : sprite(p, 200)) + '</div><div><h2>' + esc(mg ? mg.jp : p.jp) + ' <span style="font-weight:400">(' + esc(mg ? mg.n : p.en) + ')</span> ' + heartBtn(p.id, 'hb') + '</h2>' +
-      '<div class="rom">' + esc(p.romaji) + ' · #' + dexNo(p) + (p.sec === 'md' ? ' · Mega Dimension DLC' : '') + '</div><div class="sub">' + v.types.map(function (t) { return tyChip(t); }).join(' ') + '</div>' +
+    w.body.innerHTML = '<div class="hd"><div class="big" data-n="' + dexNo(p) + '">' + (mg ? megaArt(mg.s, 200, mg.n) : sprite(p, 200)) + '</div><div><h2>' + esc(mg ? mg.jp : p.jp) + ' <span class="hrm"><span class="hsep">·</span> ' + esc(mg ? 'Mega ' + p.romaji : p.romaji) + '</span> ' + heartBtn(p.id, 'hb') + '</h2>' +
+      '<div class="rom en2">' + esc(mg ? mg.n : p.en) + ' · #' + dexNo(p) + (p.sec === 'md' ? ' · Mega Dimension DLC' : '') + '</div><div class="sub">' + v.types.map(function (t) { return tyChip(t); }).join(' ') + '</div>' +
       '<div><span class="chipw" style="background:#555">' + L(ARCH[key][0], ARCH[key][1]) + '</span><span class="chipw" style="background:#7a5bb5">' + L('Nature ', 'นิสัย ') + v.nature.name + '</span></div></div></div>' + megaBar(p, mg) + blds +
       '<div class="tabs" role="tablist">' + T.map(function (t) { return '<button class="tab" role="tab" data-tab="' + t[0] + '" aria-selected="' + (t[0] === w.tab) + '">' + t[1] + '</button>'; }).join('') + '</div>' +
       '<div class="tabpane" role="tabpanel">' + T.filter(function (t) { return t[0] === w.tab; })[0][2](v) + '</div>';
@@ -546,9 +607,9 @@
           var bl = e.target.closest('.bld'); if (bl) { w.build = bl.dataset.b; showMon(w, w.monId); return; }
           var t = e.target.closest('.tab'); if (t) { w.tab = t.dataset.tab; showMon(w, w.monId); return; }
           var o = e.target.closest('[data-open]'); if (o) { e.preventDefault(); openApp(o.dataset.open); return; }
-          var mo = e.target.closest('[data-mega-off]'); if (mo) { w.mega = null; showMon(w, w.monId); return; }
-          var mgb = e.target.closest('[data-mega]'); if (mgb) { w.mega = mgb.dataset.mega; showMon(w, w.monId); return; }
-          var mn = e.target.closest('[data-mon]'); if (mn) { var tid = +mn.dataset.mon; if (tid !== w.monId) showMon(w, tid, w.tab); else if (w.mega) { w.mega = null; showMon(w, w.monId); } return; }
+          var mo = e.target.closest('[data-mega-off]'); if (mo) { megaSwap(w, null); return; }
+          var mgb = e.target.closest('[data-mega]'); if (mgb) { megaSwap(w, mgb.dataset.mega); return; }
+          var mn = e.target.closest('[data-mon]'); if (mn) { var tid = +mn.dataset.mon; if (tid !== w.monId) showMon(w, tid, w.tab); else if (w.mega) { megaSwap(w, null); } return; }
         });
         w.status.addEventListener('click', function (e) { var b = e.target.closest('[data-nav]'); if (b && !b.disabled) showMon(w, w.monId + (+b.dataset.nav)); });
         showMon(w, w.monId || id, tab);
@@ -697,6 +758,14 @@
   window.addEventListener('hashchange', route);
   document.documentElement.lang = lang;
   buildIcons(); tick(); themeBtn(); vb.title = 'v' + APP_VERSION + ' ' + APP_STAGE;
+  (function () {
+    var b = document.createElement('button'); b.id = 'sndbtn'; b.className = 'trbtn'; b.type = 'button';
+    function paint() { b.textContent = SND.isOn() ? '🔊' : '🔇'; b.title = SND.isOn() ? 'ปิดเสียง' : 'เปิดเสียง'; b.setAttribute('aria-pressed', SND.isOn()); }
+    b.onclick = function (e) { e.stopPropagation(); SND.set(!SND.isOn()); paint(); };
+    paint(); var tray = $('#tray'), clk = $('#clock'); tray.insertBefore(b, clk || null);
+    document.addEventListener('pointerdown', function () { SND.unlock(); }, { once: true });
+    document.addEventListener('click', function (e) { if (e.target.closest('.btn,.tab,.bld,.card,.evn,.dicon,#start,.menu button,.menu li')) SND.play('click'); }, true);
+  })();
   $('#favbtn').onclick = function (e) { e.stopPropagation(); openApp('favs'); };
   updateFavCount();
   openDex(); route();
@@ -719,12 +788,16 @@
     }, 1100);
     $('#pct', boot).textContent = '0%';
     var fast = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    function endBoot() { if (done) return; done = true; clearInterval(iv); clearInterval(swap); boot.classList.add('out'); setTimeout(function () { boot.remove(); }, 500); }
+    function endBoot() { if (done) return; done = true; SND.play('start'); clearInterval(iv); clearInterval(swap); boot.classList.add('out'); setTimeout(function () { boot.remove(); }, 500); }
     var iv = setInterval(function () {
       pct = Math.min(100, pct + 2 + Math.random() * 5);
       for (var n = 0; n < SEG; n++) cells[n].className = n < Math.floor(pct / 100 * SEG) ? 'on' : '';
       $('#pct', boot).textContent = Math.floor(pct) + '%';
-      if (pct >= 100) { clearInterval(iv); setTimeout(endBoot, 350); }
+      if (pct >= 100) {
+        clearInterval(iv);
+        if (SND.canAutoplay()) setTimeout(endBoot, 350);
+        else { var go = document.createElement('div'); go.className = 'bootgo'; go.textContent = 'แตะ / กดปุ่มใดก็ได้เพื่อเข้าสู่ Pokedex XP'; $('.bootbox', boot).appendChild(go); document.addEventListener('keydown', endBoot, { once: true }); }
+      }
     }, fast ? 10 : 140);
     boot.addEventListener('click', endBoot);
   }
