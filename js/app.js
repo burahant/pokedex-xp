@@ -63,7 +63,7 @@
     } catch (e) { }
   })();
   var lang = 'th';
-  var APP_VERSION = '0.9.0', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
+  var APP_VERSION = '0.9.4', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
   function B(en, th) { return lang === 'th' ? th : en; }
   function L(en, th) { return lang === 'th' ? th : en; }
   function tyName(t) { return lang === 'th' ? t + ' (' + TH_TYPE[t] + ')' : t; }
@@ -75,10 +75,10 @@
     return L(m[0], m[1]);
   }
   var EFFECT = {
-    buffA: ['Attack +2', 'โจมตี +2 ขั้น'], buffD: ['Defense up', 'ป้องกันเพิ่ม'], buffS: ['Sp. Atk +2', 'โจมตีพิเศษ +2 ขั้น'], buffAD: ['Attack & Defense +1', 'โจมตีและป้องกัน +1'], buffSD: ['Sp. Def up', 'ป้องกันพิเศษเพิ่ม'], buffSSD: ['Sp. Atk & Sp. Def +1', 'โจมตีพิเศษและป้องกันพิเศษ +1'], buffSpe: ['Speed +2', 'ความเร็ว +2 ขั้น'], buffAS: ['Attack & Sp. Atk +1', 'โจมตีและโจมตีพิเศษ +1'], buffAll: ['Raises several stats', 'ค่าสถานะหลายอย่างเพิ่ม'], buffBig: ['Raises several stats a lot', 'เพิ่มค่าสถานะหลายอย่างอย่างแรง'],
+    buffA: ['Attack +2', 'โจมตี +2 ขั้น'], buffD: ['Defense up', 'ป้องกันเพิ่ม'], buffS: ['Sp. Atk +2', 'โจมตีพิเศษ +2 ขั้น'], buffAD: ['Attack & Defense +1', 'โจมตีและป้องกัน +1'], buffSD: ['Sp. Def up', 'ป้องกันพิเศษเพิ่ม'], buffSSD: ['Sp. Atk & Sp. Def +1', 'โจมตีพิเศษและป้องกันพิเศษ +1'], buffSpe: ['Speed +2', 'ความเร็ว +2 ขั้น'], buffAS: ['Attack & Sp. Atk +1', 'โจมตีและโจมตีพิเศษ +1'], buffAll: ['Raises several stats', 'ค่าพลังหลายอย่างเพิ่ม'], buffBig: ['Raises several stats a lot', 'เพิ่มค่าพลังหลายอย่างอย่างแรง'],
     debuffA: ['Lowers foe Attack', 'ลดโจมตีของศัตรู'], debuffD: ['Lowers foe Defense', 'ลดป้องกันของศัตรู'], debuffS: ['Lowers foe Sp. Atk', 'ลดโจมตีพิเศษของศัตรู'], debuffSD: ['Lowers foe Sp. Def', 'ลดป้องกันพิเศษของศัตรู'], debuffSpe: ['Lowers foe Speed', 'ลดความเร็วของศัตรู'], debuffAcc: ['Lowers foe accuracy', 'ลดความแม่นยำของศัตรู'],
     paralyze: ['Paralyzes the foe', 'ทำให้ศัตรูเป็นอัมพาต'], burn: ['Burns the foe (weakens physical hits)', 'ทำให้ติดไฟ (โจมตีกายภาพลดลง)'], sleep: ['Puts the foe to sleep', 'ทำให้หลับ'], poison: ['Poisons the foe', 'ทำให้ติดพิษ'], confuse: ['Confuses the foe', 'ทำให้สับสน'], heal: ['Restores HP', 'ฟื้นฟู HP'], protect: ['Blocks attacks', 'ป้องกันการโจมตี'], screen: ['Reduces damage taken', 'ลดความเสียหายที่ได้รับ'], hazard: ['Sets a hazard', 'วางกับดักบนสนาม'], taunt: ['Forces foe to attack only', 'ยั่วให้ใช้แต่ท่าโจมตี'], switch: ['Forces / causes a switch', 'บังคับ/เปลี่ยนตัว'], misc: ['Special effect', 'ท่าพิเศษ'], evade: ['Raises evasion', 'เพิ่มหลบหลีก'], crit: ['Raises crit chance', 'เพิ่มโอกาสคริติคอล'], none: ['No effect', 'ไม่มีผล'],
-    delay: ['Delayed hit', 'โจมตีหน่วงเวลา'], rc: ['Very strong, needs recovery', 'แรงมากแต่ต้องพักหลังใช้'], sd: ['Strong, lowers own stats', 'แรง แต่ลดค่าสถานะตัวเอง'], recoil: ['Strong, has recoil', 'แรง แต่ได้รับแรงสะท้อน'], ch: ['Needs charge / dodge first', 'ต้องชาร์จ/หลบก่อนโจมตี'], lo: ['Strong but can miss', 'แรงแต่พลาดได้'], sx: ['Faints the user', 'ทำลายตัวเอง'], ohko: ['KO if it hits (rarely does)', 'น็อกทันทีถ้าโดน (พลาดง่าย)'], prio: ['Fast, no wind-up', 'ออกไว ไม่มีช่วงเตรียมท่า'], drain: ['Drains HP', 'ดูด HP ศัตรูมาเติม'], weak: ['Leaves foe at 1 HP', 'ลด HP ไม่เกินเหลือ 1'], cond: ['Only works on sleeping foes', 'ใช้ได้เฉพาะศัตรูหลับ']
+    delay: ['Delayed hit', 'โจมตีหน่วงเวลา'], rc: ['Very strong, needs recovery', 'แรงมากแต่ต้องพักหลังใช้'], sd: ['Strong, lowers own stats', 'แรง แต่ลดค่าพลังตัวเอง'], recoil: ['Strong, has recoil', 'แรง แต่ได้รับแรงสะท้อน'], ch: ['Needs charge / dodge first', 'ต้องชาร์จ/หลบก่อนโจมตี'], lo: ['Strong but can miss', 'แรงแต่พลาดได้'], sx: ['Faints the user', 'ทำลายตัวเอง'], ohko: ['KO if it hits (rarely does)', 'น็อกทันทีถ้าโดน (พลาดง่าย)'], prio: ['Fast, no wind-up', 'ออกไว ไม่มีช่วงเตรียมท่า'], drain: ['Drains HP', 'ดูด HP ศัตรูมาเติม'], weak: ['Leaves foe at 1 HP', 'ลด HP ไม่เกินเหลือ 1'], cond: ['Only works on sleeping foes', 'ใช้ได้เฉพาะศัตรูหลับ']
   };
   function effectText(mv) { var m = MV[mv], e = EFFECT[m.tag]; return e ? L(e[0], e[1]) : ''; }
   function originText(c) { if (c === 'TM') return L('TM / taught', 'TM / สอนท่า'); if (c === 'E') return L('On evolving', 'ตอนวิวัฒนาการ'); if (c === 'R') return L('Move Reminder', 'ผู้สอนท่า (Reminder)'); return L('Level ', 'เลเวล ') + c.slice(1); }
@@ -323,7 +323,7 @@
   var dexState = { q: '', type: '', build: '', sort: 'dex', col: {}, tab: 'main' };
   function openDex() {
     openWin({
-      id: 'dex', title: function () { return 'Pokédex — ' + GAME_NAME; }, icon: ico('dex'), max: true, w: 1000, h: 640,
+      id: 'dex', title: function () { return 'Pokédex'; }, icon: ico('dex'), max: true, w: 1000, h: 640,
       render: function (w) {
         var typeOpts = '<option value="">' + L('All types', 'ทุกธาตุ') + '</option>' + D.types.map(function (t) { return '<option value="' + t + '">' + tyName(t) + '</option>'; }).join('');
         w.body.innerHTML = '<div class="tabs dtabs" role="tablist"><button class="tab" role="tab" data-dtab="main" aria-selected="true">📖 Pokédex</button><button class="tab" role="tab" data-dtab="md" aria-selected="false">✨ Mega Dimension DLC</button><button class="tab" role="tab" data-dtab="mega" aria-selected="false">🔶 Mega (' + allMegas().length + ')</button></div><div class="dpane" id="dexpane">' +
@@ -339,7 +339,7 @@
         var q = $('#q', w.body), ft = $('#ft', w.body), fb = $('#fb', w.body), so = $('#so', w.body), grid = $('#grid', w.body);
         q.value = dexState.q; ft.value = dexState.type; fb.value = dexState.build; so.value = dexState.sort;
         function draw() {
-          dexState.q = q.value; dexState.type = ft.value; dexState.build = fb.value; dexState.sort = so.value;
+          dexState.q = q.value; var mq0 = $('.mq', w.body); if (mq0 && mq0.value !== q.value) mq0.value = q.value; dexState.type = ft.value; dexState.build = fb.value; dexState.sort = so.value;
           var s = norm(q.value.trim().replace(/^#/, ''));
           var list = P.filter(function (p) {
             if (dexState.type && p.types.indexOf(dexState.type) < 0) return false;
@@ -372,6 +372,7 @@
           if (k !== 'mega') dexState.tab = k;
           $('#dexpane', w.body).hidden = k === 'mega'; $('#megapane', w.body).hidden = k !== 'mega';
           [].forEach.call(w.body.querySelectorAll('[data-dtab]'), function (b) { b.setAttribute('aria-selected', b.dataset.dtab === k); });
+          var dq = $('#q', w.body), mq = $('.mq', w.body); if (dq) dq.value = dexState.q; if (mq) mq.value = dexState.q;
           w.body.scrollTop = 0; if (k === 'mega') w.megaPaint(); else draw();
         };
         w.setTab(dexState.tab);
@@ -425,7 +426,7 @@
       '<p style="margin:4px 0">' + esc(natureWhy(p)) + '</p>' +
       '<div class="note">' + L('💡 Got a different nature? Use a <b>Mint</b> to change the nature’s <i>effect</i> to ' + n.name + ' (shop locations in the <a href="#/iv" data-open="iv">IV/EV guide</a>).', '💡 ได้นิสัยอื่นมาก็ไม่ต้องเริ่มใหม่ — ใช้ <b>Mint</b> เปลี่ยน “ผลของนิสัย” เป็น ' + n.name + ' ได้ (ดูที่ซื้อใน <a href="#/iv" data-open="iv">คู่มือ IV/EV</a>)') + '</div></div>' +
       '<div class="group"><span class="gt">' + L('⚥ Best gender', '⚥ เพศที่ดีที่สุด') + '</span><b>' + esc(g.ratio === 'genderless' ? L('Genderless', 'ไม่มีเพศ') : g.ratio) + '</b><p style="margin:4px 0">' + esc(L(gt[0], gt[1])) + '</p>' +
-      (cs ? '<p style="margin:4px 0;color:#444">' + L('Looks: ', 'รูปลักษณ์: ') + esc(L(cs[0], cs[1])) + '</p>' : '') + '</div>' + '<div class="note">' + L('Role: ', 'ประเภท: ') + '<b>' + L(ARCH[p.arch][0], ARCH[p.arch][1]) + '</b> · ' + L('mainly hits with ', 'ตีหลักด้วย') + '<b>' + (p.catDom === 'P' ? L('physical moves', 'ท่ากายภาพ') : L('special moves', 'ท่าพิเศษ')) + '</b></div>' + '</div></div>';
+      (cs ? '<p style="margin:4px 0;color:#444">' + L('Looks: ', 'รูปลักษณ์: ') + esc(L(cs[0], cs[1])) + '</p>' : '') + '</div>' + '<div class="note">' + L('Role: ', 'สายการเล่น: ') + '<b>' + L(ARCH[p.arch][0], ARCH[p.arch][1]) + '</b> · ' + L('mainly hits with ', 'ตีหลักด้วย') + '<b>' + (p.catDom === 'P' ? L('physical moves', 'ท่ากายภาพ') : L('special moves', 'ท่าพิเศษ')) + '</b></div>' + '</div></div>';
   }
   function padSlot(b) {
     var m = MV[b.move];
@@ -476,10 +477,10 @@
     var views = [
       { name: 'IV', o: { labels: lab, max: 31, series: [ser(iv, RL)], tags: iv, arrows: ar, alt: 'IV ที่แนะนำ' } },
       { name: 'EV', o: { labels: lab, max: 252, series: [ser(ev, RE)], tags: ev, arrows: ar, alt: 'EV ที่แนะนำ' } },
-      { name: 'ค่าจริง Lv.50', o: { labels: lab, max: radarMax(fin.concat(p.stats), 100), series: [ser(p.stats, RG), ser(fin, RY)], tags: fin, arrows: ar, alt: 'ค่าพลังจริง' }, lg: [['#777', 'ค่าพื้นฐาน'], ['#e8730c', 'ค่าจริงตามแผนแนะนำ']] }
+      { name: 'ค่าจริง Lv.50', o: { labels: lab, max: radarMax(fin.concat(p.stats), 100), series: [ser(p.stats, RG), ser(fin, RY)], tags: fin, arrows: ar, alt: 'ค่าพลังจริง' }, lg: [['#777', 'ค่าพลังพื้นฐาน'], ['#e8730c', 'ค่าจริงตามแผนแนะนำ']] }
     ];
     return '<div class="group"><span class="gt">⬡ ชาร์ตค่าแนะนำสำหรับตัวนี้ (นิสัย ' + n.name + ')</span>' + rvHTML(views, 0) +
-      '<div class="note">สมมติ IV เต็ม 31 เฉพาะค่าที่ควรดัน (ที่เหลือ 0) + EV ตามแผนแนะนำ · กดแท็บเพื่อสลับ IV / EV / ค่าจริง · ลองปรับเองได้ที่ <a href="#/iv" data-open="iv">เครื่องคำนวณ IV/EV</a></div></div>';
+      '<div class="note">สมมติ IV เต็ม 31 เฉพาะค่าที่ควรดัน (ที่เหลือ 0) + EV ตามแผนแนะนำ · กดแท็บเพื่อสลับ IV, EV, ค่าจริง · ลองปรับเองได้ที่ <a href="#/iv" data-open="iv">เครื่องคำนวณ IV/EV</a></div></div>';
   }
   function tabTrain(p) {
     var ivs = p.ivPriority.map(function (s) { return '<span class="chipw" style="background:#2e6fd8">' + statName(s) + '</span>'; }).join('');
@@ -581,7 +582,7 @@
       '<div class="group"><span class="gt">💿 เรียนจาก TM (' + tmItems.length + ' ท่า) — เรียงจากดีที่สุดไปน้อยที่สุด</span>' + (tmItems.length ? table(tmRows) : '<div class="empty">ไม่มี TM ที่ใช้ได้ใน Z-A</div>') + '</div>';
   }
   var curMonWin = null;
-  function tabs() { return [['ov', '📋 ภาพรวม', tabOverview], ['evo', '🧬 วิวัฒนาการ', tabEvo], ['mv', '🎮 ท่า & ปุ่ม', tabMoves], ['ls', '📚 ท่าที่เรียนได้', tabLearn], ['mt', '⚔️ ธาตุ', tabMatch], ['tr', '🏋️ IV / EV', tabTrain]]; }
+  function tabs() { return [['ov', '📋 ภาพรวม', tabOverview], ['evo', '🧬 วิวัฒนาการ', tabEvo], ['mv', '🎮 ท่า & ปุ่ม', tabMoves], ['ls', '📚 ท่าที่เรียนได้', tabLearn], ['mt', '⚔️ ธาตุ', tabMatch], ['tr', '🏋️ IV/EV', tabTrain]]; }
   /* evolution effect: white-out the current art, swap form, then flash in the new one */
   function megaFx(big) {
     var f = document.createElement('div'); f.className = 'mfx';
@@ -768,9 +769,9 @@
     var n = p.nature, base = p.stats, nat = base.map(function (v, i) { return Math.round(v * natFactor(n, i)); }), mg = !!p.baseStats, ar = natArrows(n);
     var max = radarMax(base.concat(nat, p.baseStats || []), 60), lab = STAT_KEYS.map(statName);
     var views = [
-      { name: mg ? 'ค่าร่าง Mega' : 'ค่าพื้นฐาน', o: { labels: lab, max: max, series: (mg ? [ser(p.baseStats, RG)] : []).concat([ser(base, RB)]), tags: base, alt: 'ค่าพลังพื้นฐาน' }, lg: mg ? [['#777', 'ร่างปกติ'], ['#1f5fd0', 'ร่าง Mega']] : null },
-      { name: 'รวมผลนิสัย', o: { labels: lab, max: max, series: [ser(base, RG), ser(nat, RY)], tags: nat, arrows: ar, alt: 'ค่าพลังรวมผลนิสัย' }, lg: [['#777', 'ค่าพื้นฐาน'], ['#e8730c', 'รวมผลนิสัย ' + n.name]] },
-      { name: 'เทียบกัน', o: { labels: lab, max: max, series: [ser(base, RB), ser(nat, RY)], tags: nat, arrows: ar, alt: 'เทียบค่าพื้นฐานกับรวมผลนิสัย' }, lg: [['#1f5fd0', 'ค่าพื้นฐาน'], ['#e8730c', 'รวมผลนิสัย']] }
+      { name: mg ? 'ค่าร่าง Mega' : 'ค่าพลังพื้นฐาน', o: { labels: lab, max: max, series: (mg ? [ser(p.baseStats, RG)] : []).concat([ser(base, RB)]), tags: base, alt: 'ค่าพลังพื้นฐาน' }, lg: mg ? [['#777', 'ร่างปกติ'], ['#1f5fd0', 'ร่าง Mega']] : null },
+      { name: 'รวมผลนิสัย', o: { labels: lab, max: max, series: [ser(base, RG), ser(nat, RY)], tags: nat, arrows: ar, alt: 'ค่าพลังรวมผลนิสัย' }, lg: [['#777', 'ค่าพลังพื้นฐาน'], ['#e8730c', 'รวมผลนิสัย ' + n.name]] },
+      { name: 'เทียบกัน', o: { labels: lab, max: max, series: [ser(base, RB), ser(nat, RY)], tags: nat, arrows: ar, alt: 'เทียบค่าพลังพื้นฐานกับรวมผลนิสัย' }, lg: [['#1f5fd0', 'ค่าพลังพื้นฐาน'], ['#e8730c', 'รวมผลนิสัย']] }
     ];
     return '<div class="group"><span class="gt">⬡ ชาร์ตค่าพลัง</span>' + rvHTML(views, 0) +
       '<div class="note">นิสัย <b>' + n.name + '</b>: ' + (n.up ? 'เพิ่ม ' + statName(n.up) + ' +10% (▲ แดง) · ลด ' + statName(n.down) + ' −10% (▼ น้ำเงิน)' : 'เป็นกลาง') + ' — กดแท็บด้านบนเพื่อสลับมุมมอง (HP ไม่ถูกกระทบ) <a href="#/natures" data-open="natures">ดูตารางนิสัยทั้งหมด</a></div></div>';
@@ -785,14 +786,14 @@
       return '<div class="cr"><b>' + statName(k) + '</b><label>IV <input type="range" min="0" max="31" step="1" data-k="iv" data-i="' + i + '" value="' + cs.iv[i] + '"><output class="ivo"></output></label>' +
         '<label>EV <input type="range" min="0" max="252" step="4" data-k="ev" data-i="' + i + '" value="' + cs.ev[i] + '"><output class="evo"></output></label><span class="fin"></span></div>';
     }).join('');
-    return '<div class="group" id="ivcalc"><span class="gt">🧮 เครื่องคำนวณ IV / EV + ชาร์ตหกเหลี่ยม</span>' +
+    return '<div class="group" id="ivcalc"><span class="gt">🧮 เครื่องคำนวณ IV/EV + ชาร์ตหกเหลี่ยม</span>' +
       '<div class="crow"><label>โปเกมอน <select class="cmon" aria-label="โปเกมอน">' + P.map(function (p) { return '<option value="' + p.id + '"' + (p.id === cs.id ? ' selected' : '') + '>#' + dexNo(p) + ' ' + esc(p.romaji) + ' (' + esc(p.en) + ')</option>'; }).join('') + '</select></label>' +
       '<label>เลเวล <input type="number" class="clv" min="1" max="100" value="' + cs.lv + '"></label>' +
       '<label>นิสัย <select class="cnat" aria-label="นิสัย">' + NATURE_LIST.map(function (n) { return '<option value="' + n.name + '"' + (n.name === cs.nat ? ' selected' : '') + '>' + n.name + (n.up ? ' (▲' + statName(n.up) + ' ▼' + statName(n.down) + ')' : ' (เป็นกลาง)') + '</option>'; }).join('') + '</select></label></div>' +
       '<div class="cbody"><div class="crows">' + rows + '<div class="evtot"></div>' +
       '<div class="pre"><button type="button" class="btn" data-pre="iv31">IV 31 ทั้งหมด</button><button type="button" class="btn" data-pre="iv0">IV 0 ทั้งหมด</button><button type="button" class="btn" data-pre="phys">EV ตีกายภาพเร็ว</button><button type="button" class="btn" data-pre="spec">EV ตีพิเศษเร็ว</button><button type="button" class="btn" data-pre="bulk">EV ถึก</button><button type="button" class="btn" data-pre="evclr">ล้าง EV</button></div></div>' +
       '<div class="crad"><div class="rvhost"></div></div></div>' +
-      '<div class="note">สูตรมาตรฐานของเกมหลัก: ค่าจริง = ⌊(2×ค่าพื้นฐาน + IV + ⌊EV÷4⌋) × เลเวล ÷ 100⌋ + 5 แล้วคูณนิสัย (HP = ... + เลเวล + 10) · EV รวมไม่เกิน 510 และไม่เกิน 252 ต่อค่า · เป็นตัวช่วยประมาณเท่านั้น ตัวเลขในเกม Z-A อาจต่างเล็กน้อย</div></div>';
+      '<div class="note">สูตรมาตรฐานของเกมหลัก: ค่าจริง = ⌊(2×ค่าพลังพื้นฐาน + IV + ⌊EV÷4⌋) × เลเวล ÷ 100⌋ + 5 แล้วคูณนิสัย (HP = ... + เลเวล + 10) · EV รวมไม่เกิน 510 และไม่เกิน 252 ต่อค่า · เป็นตัวช่วยประมาณเท่านั้น ตัวเลขในเกม Z-A อาจต่างเล็กน้อย</div></div>';
   }
   function calcInit(win) {
     var root = $('#ivcalc', win.body), cs = calcState; if (!root) return;
@@ -810,7 +811,7 @@
       host.innerHTML = rvHTML([
         { name: 'IV', o: { labels: lab, max: 31, series: [ser(cs.iv, RL)], tags: cs.iv, arrows: ar, alt: 'ชาร์ต IV' } },
         { name: 'EV', o: { labels: lab, max: 252, series: [ser(cs.ev, RE)], tags: cs.ev, arrows: ar, alt: 'ชาร์ต EV' } },
-        { name: 'ค่าจริง', o: { labels: lab, max: radarMax(fin.concat(p.stats), 100), series: [ser(p.stats, RG), ser(fin, RY)], tags: fin, arrows: ar, alt: 'ชาร์ตค่าพลังจริง' }, lg: [['#777', 'ค่าพื้นฐาน'], ['#e8730c', 'ค่าจริง เลเวล ' + cs.lv + ' · ' + cs.nat]] }
+        { name: 'ค่าจริง', o: { labels: lab, max: radarMax(fin.concat(p.stats), 100), series: [ser(p.stats, RG), ser(fin, RY)], tags: fin, arrows: ar, alt: 'ชาร์ตค่าพลังจริง' }, lg: [['#777', 'ค่าพลังพื้นฐาน'], ['#e8730c', 'ค่าจริง เลเวล ' + cs.lv + ' · ' + cs.nat]] }
       ], act);
     }
     root.addEventListener('input', function (e) {
@@ -863,22 +864,22 @@
   }
   function megaInit(w, pane) {
     var ms = megaState;
-    pane.innerHTML = '<div class="toolbar"><label class="grow"><span style="position:absolute;left:-9999px">ค้นหา</span><input type="search" class="mq" placeholder="🔍 ค้นหาร่างเมก้า: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข" value="' + esc(ms.q) + '" style="width:100%"></label>' +
+    pane.innerHTML = '<div class="toolbar"><label class="grow"><span style="position:absolute;left:-9999px">ค้นหา</span><input type="search" class="mq" placeholder="🔍 ค้นหา: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข เช่น ピカチュウ, pika, 25" value="' + esc(dexState.q) + '" style="width:100%"></label>' +
       '<select class="mt" aria-label="กรองตามธาตุ"><option value="">ทุกธาตุ</option>' + D.types.map(function (t) { return '<option value="' + t + '"' + (ms.type === t ? ' selected' : '') + '>' + tyName(t) + '</option>'; }).join('') + '</select>' +
       '<select class="ms" aria-label="เรียง"><option value="dex"' + (ms.sort === 'dex' ? ' selected' : '') + '>เรียง: ลำดับ Pokédex</option><option value="bst"' + (ms.sort === 'bst' ? ' selected' : '') + '>เรียง: ค่าพลังรวมสูงสุด</option><option value="en"' + (ms.sort === 'en' ? ' selected' : '') + '>เรียง: ชื่ออังกฤษ A–Z</option></select></div>' +
       '<div class="note">แสดงเฉพาะร่าง Mega · กดการ์ดเพื่อเปิดหน้ารายละเอียดของโปเกมอนตัวนั้นในร่าง Mega</div><div class="mgrid grid" role="list"></div>';
     function paint() {
-      var q = norm(ms.q), l = allMegas().filter(function (e) {
+      var q = norm(dexState.q.trim().replace(/^#/, '')), l = allMegas().filter(function (e) {
         if (ms.type && e.mg.ty.indexOf(ms.type) < 0) return false;
         if (!q) return true;
         return norm(e.p.en + ' ' + e.p.jp + ' ' + e.p.romaji + ' ' + e.mg.n + ' ' + e.mg.jp + ' ' + dexNo(e.p)).indexOf(q) >= 0;
       });
       if (ms.sort === 'bst') l.sort(function (a, b) { return b.bst - a.bst; }); else if (ms.sort === 'en') l.sort(function (a, b) { return a.mg.n < b.mg.n ? -1 : 1; });
-      $('.mgrid', pane).innerHTML = l.length ? l.map(megaCard).join('') : '<div class="empty"><b>ไม่พบร่างเมก้าที่ค้นหา</b></div>';
-      w.setStatus('<span>ร่างเมก้า ' + l.length + ' / ' + allMegas().length + ' รูปแบบ</span>');
+      $('.mgrid', pane).innerHTML = l.length ? l.map(megaCard).join('') : '<div class="empty">ไม่พบโปเกมอนที่ตรงกับ “' + esc(dexState.q) + '” ในแท็บนี้</div>';
+      w.setStatus('<span>ร่าง Mega ' + l.length + ' / ' + allMegas().length + ' รูปแบบ</span>');
     }
     w.megaPaint = paint;
-    $('.mq', pane).addEventListener('input', function () { ms.q = this.value; paint(); });
+    $('.mq', pane).addEventListener('input', function () { dexState.q = this.value; var dq = $('#q', w.body); if (dq) dq.value = this.value; paint(); });
     $('.mt', pane).addEventListener('change', function () { ms.type = this.value; paint(); });
     $('.ms', pane).addEventListener('change', function () { ms.sort = this.value; paint(); });
     pane.addEventListener('click', function (e) { var h = e.target.closest('.heart'); if (h) { toggleFav(+h.dataset.id); return; } var c = e.target.closest('.card'); if (c && c.dataset.ms) openMega(+c.dataset.mid, c.dataset.ms); });
@@ -911,9 +912,9 @@
   }
   function slotHTML(e, ti, si) {
     var m = memInfo(e);
-    if (!m) return '<div class="tslot empty"><button type="button" class="tadd" data-t="' + ti + '" data-s="' + si + '" aria-label="เพิ่มโปเกมอนช่อง ' + (si + 1) + '"><span class="plus">+</span><small>ช่อง ' + (si + 1) + '</small></button></div>';
+    if (!m) return '<div class="tslot empty" data-t="' + ti + '" data-s="' + si + '"><button type="button" class="tadd" data-t="' + ti + '" data-s="' + si + '" aria-label="เพิ่มโปเกมอนช่อง ' + (si + 1) + '"><span class="plus">+</span><small>ช่อง ' + (si + 1) + '</small></button></div>';
     var p = m.p, mg = m.mg;
-    return '<div class="tslot"><div class="tbar"><button type="button" class="ti2" data-view="' + p.id + '" data-vm="' + (mg ? mg.s : '') + '" title="ดูรายละเอียด" aria-label="ดูรายละเอียด">i</button><button type="button" class="tx" data-t="' + ti + '" data-s="' + si + '" data-rm="1" title="นำออกจากทีม" aria-label="นำออกจากทีม"></button></div>' +
+    return '<div class="tslot" data-t="' + ti + '" data-s="' + si + '"><div class="tbar"><button type="button" class="ti2" data-view="' + p.id + '" data-vm="' + (mg ? mg.s : '') + '" title="ดูรายละเอียด" aria-label="ดูรายละเอียด">i</button><button type="button" class="tx" data-t="' + ti + '" data-s="' + si + '" data-rm="1" title="นำออกจากทีม" aria-label="นำออกจากทีม"></button></div>' +
       '<button type="button" class="tadd" data-t="' + ti + '" data-s="' + si + '" title="เปลี่ยนโปเกมอน">' + (mg ? megaArt(mg.s, 104, mg.n) : sprite(p, 104)) +
       '<span class="tn">' + esc(mg ? mg.jp : p.jp) + '</span><span class="te">' + esc(mg ? 'Mega ' + p.romaji : p.romaji) + '</span>' + tyRow(m.types) + '</button></div>';
   }
@@ -923,8 +924,51 @@
     return '<div class="group team' + (t.c ? ' collapsed' : '') + '" data-ti="' + ti + '"><div class="thd"><button type="button" class="tcol" data-tcol="' + ti + '" aria-expanded="' + (!t.c) + '" title="หุบ / เปิดทีม">▾</button><span class="tno">' + (ti + 1) + '</span><input class="tname" data-t="' + ti + '" maxlength="24" value="' + esc(t.n) + '" aria-label="ชื่อทีม ' + (ti + 1) + '"><span class="tmini">' + mini + '</span><span class="tcnt">' + cnt + ' / 6</span><button type="button" class="btn" data-tclear="' + ti + '"' + (cnt ? '' : ' disabled') + '>ล้างทีม</button></div>' +
       '<div class="tbody"' + (t.c ? ' hidden' : '') + '><div class="tslots">' + t.m.map(function (e, si) { return slotHTML(e, ti, si); }).join('') + '</div>' + teamSummary(t) + '</div></div>';
   }
+  /* drag & drop (mouse + touch long-press): swap any two team slots, within a team or across teams */
+  var dragEnd = 0;
+  function swapSlots(a, b) { var t = teams[a.t].m[a.s]; teams[a.t].m[a.s] = teams[b.t].m[b.s]; teams[b.t].m[b.s] = t; saveTeams(); }
+  function enableSlotDrag(root, scroller, onSwap) {
+    var st = null;
+    function slotAt(x, y) { var el = document.elementFromPoint(x, y); return el && el.closest ? el.closest('.tslot[data-t]') : null; }
+    function place() { if (st.ghost) { st.ghost.style.left = (st.x - st.dx) + 'px'; st.ghost.style.top = (st.y - st.dy) + 'px'; } }
+    function hl() { var o = slotAt(st.x, st.y); if (o === st.src) o = null; if (st.over && st.over !== o) st.over.classList.remove('dragover'); st.over = o; if (o) o.classList.add('dragover'); }
+    function begin() {
+      var r = st.src.getBoundingClientRect(), g = st.src.cloneNode(true);
+      g.classList.add('dragghost'); g.style.width = r.width + 'px'; g.style.height = r.height + 'px'; document.body.appendChild(g);
+      st.ghost = g; st.dx = st.x0 - r.left; st.dy = st.y0 - r.top; st.active = true; st.src.classList.add('dragging'); document.body.classList.add('dragging-slot'); place();
+      st.scr = setInterval(function () {
+        var sc = scroller && scroller(); if (!sc || !st) return; var b = sc.getBoundingClientRect();
+        if (st.y < b.top + 36) sc.scrollTop -= 14; else if (st.y > b.bottom - 36) sc.scrollTop += 14; hl();
+      }, 40);
+    }
+    function cleanup() {
+      if (!st) return; clearTimeout(st.timer); clearInterval(st.scr);
+      if (st.ghost) st.ghost.remove(); st.src.classList.remove('dragging'); if (st.over) st.over.classList.remove('dragover'); document.body.classList.remove('dragging-slot');
+      document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', cleanup); document.removeEventListener('touchmove', tm); st = null;
+    }
+    function tm(e) { if (st && st.active) e.preventDefault(); }
+    function move(e) {
+      if (!st) return; st.x = e.clientX; st.y = e.clientY;
+      if (!st.active) { var d = Math.hypot(st.x - st.x0, st.y - st.y0); if (st.touch) { if (d > 8) cleanup(); return; } if (d > 6) begin(); else return; }
+      place(); hl();
+    }
+    function up(e) {
+      if (!st) return;
+      if (st.active) { var tg = slotAt(e.clientX, e.clientY), a = { t: st.t, s: st.s }; cleanup(); dragEnd = Date.now(); if (tg) { var b = { t: +tg.dataset.t, s: +tg.dataset.s }; if (a.t !== b.t || a.s !== b.s) { swapSlots(a, b); SND.play('click'); onSwap(); } } }
+      else cleanup();
+    }
+    root.addEventListener('pointerdown', function (e) {
+      if (e.button > 0 || st) return;
+      var sl = e.target.closest('.tslot[data-t]'); if (!sl || sl.classList.contains('empty') || e.target.closest('.tx,.ti2,.trm')) return;
+      st = { src: sl, t: +sl.dataset.t, s: +sl.dataset.s, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch', active: false };
+      if (st.touch) st.timer = setTimeout(function () { if (st && !st.active) begin(); }, 320);
+      document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', cleanup); document.addEventListener('touchmove', tm, { passive: false });
+    });
+    root.addEventListener('dragstart', function (e) { if (e.target.closest && e.target.closest('.tslot')) e.preventDefault(); });
+    root.addEventListener('click', function (e) { if (Date.now() - dragEnd < 300) { e.stopPropagation(); e.preventDefault(); } }, true);
+  }
   function openTeams() {
-    openWin({ id: 'teams', title: function () { return 'ทีมโปรด — 6 ทีม ทีมละ 6 ตัว'; }, icon: ico('teams'), w: 960, h: 640, render: function (w) {
+    openWin({ id: 'teams', title: function () { return 'ทีมโปรด'; }, icon: ico('teams'), w: 960, h: 640, render: function (w) {
       function paint(keep) {
         var sc = w.body.scrollTop;
         w.body.innerHTML = '<div class="note">จัดทีมโปเกมอนได้ 6 ทีม ทีมละ 6 ตัว · กดช่อง “+” เพื่อเลือก (เลือกร่าง Mega ได้) · แก้ชื่อทีมได้ · กด ▾ ที่หัวทีมเพื่อหุบ/เปิด · บันทึกในเบราว์เซอร์นี้อัตโนมัติ</div><div class="toolbar"><button type="button" class="btn" data-tall="0">▾ เปิดทุกทีม</button><button type="button" class="btn" data-tall="1">▸ หุบทุกทีม</button></div>' + teams.map(teamHTML).join('');
@@ -935,7 +979,7 @@
       function pick(ti, si) {
         var ov = document.createElement('div'); ov.className = 'tpick'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'เลือกโปเกมอน');
         var cur = teams[ti].m[si], st = { q: '', fav: false, mega: false };
-        ov.innerHTML = '<div class="tph"><b>ทีม ' + (ti + 1) + ' · ช่อง ' + (si + 1) + '</b><input type="search" class="tpq" placeholder="🔍 ค้นหา: ชื่อ / โรมาจิ / เลข" style="flex:1;min-width:120px"><label><input type="checkbox" class="tpf"> เฉพาะรายการโปรด</label><label><input type="checkbox" class="tpm"> รวมร่าง Mega</label>' + (cur ? '<button type="button" class="btn tprm">นำออก</button>' : '') + '<button type="button" class="btn tpx">ปิด</button></div><div class="tpg"></div>';
+        ov.innerHTML = '<div class="tph"><b>ทีม ' + (ti + 1) + ' · ช่อง ' + (si + 1) + '</b><input type="search" class="tpq" placeholder="🔍 ค้นหา: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข เช่น ピカチュウ, pika, 25" style="flex:1;min-width:120px"><label><input type="checkbox" class="tpf"> เฉพาะรายการโปรด</label><label><input type="checkbox" class="tpm"> รวมร่าง Mega</label>' + (cur ? '<button type="button" class="btn tprm">นำออก</button>' : '') + '<button type="button" class="btn tpx">ปิด</button></div><div class="tpg"></div>';
         w.el.appendChild(ov);
         function fill() {
           var q = norm(st.q), items = [];
@@ -966,6 +1010,7 @@
         var ad = e.target.closest('.tadd'); if (ad) pick(+ad.dataset.t, +ad.dataset.s);
       });
       w.body.addEventListener('change', function (e) { var n = e.target.closest('.tname'); if (n) { teams[+n.dataset.t].n = n.value.trim().slice(0, 24) || 'ทีม ' + (+n.dataset.t + 1); n.value = teams[+n.dataset.t].n; saveTeams(); } });
+      enableSlotDrag(w.body, function () { return w.body; }, function () { paint(true); });
       paint(false);
     } });
   }
@@ -976,8 +1021,8 @@
     var ov = document.createElement('div'); ov.className = 'tpick'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'เพิ่มเข้าทีม');
     function mini(e, ti, si) {
       var m = memInfo(e), key = ti + '_' + si;
-      if (!m) return '<div class="tslot empty"><button type="button" class="tadd tput" data-t="' + ti + '" data-s="' + si + '"><span class="plus">+</span><small>ช่อง ' + (si + 1) + '</small></button></div>';
-      return '<div class="tslot' + (key === last ? ' just' : '') + (e === entry ? ' same' : '') + '"><div class="tbar"><span></span><button type="button" class="tx trm" data-t="' + ti + '" data-s="' + si + '" title="นำออกจากทีม" aria-label="นำออกจากทีม"></button></div><div class="tadd">' + (m.mg ? megaArt(m.mg.s, 64, m.mg.n) : sprite(m.p, 64)) + '<span class="tn">' + esc(m.mg ? m.mg.jp : m.p.jp) + '</span></div></div>';
+      if (!m) return '<div class="tslot empty" data-t="' + ti + '" data-s="' + si + '"><button type="button" class="tadd tput" data-t="' + ti + '" data-s="' + si + '"><span class="plus">+</span><small>ช่อง ' + (si + 1) + '</small></button></div>';
+      return '<div class="tslot' + (key === last ? ' just' : '') + (e === entry ? ' same' : '') + '" data-t="' + ti + '" data-s="' + si + '"><div class="tbar"><span></span><button type="button" class="tx trm" data-t="' + ti + '" data-s="' + si + '" title="นำออกจากทีม" aria-label="นำออกจากทีม"></button></div><div class="tadd">' + (m.mg ? megaArt(m.mg.s, 64, m.mg.n) : sprite(m.p, 64)) + '<span class="tn">' + esc(m.mg ? m.mg.jp : m.p.jp) + '</span></div></div>';
     }
     function paint() {
       var sc = $('.tpg', ov) ? $('.tpg', ov).scrollTop : 0;
@@ -986,6 +1031,7 @@
       $('.tpg', ov).scrollTop = sc;
     }
     paint(); w.el.appendChild(ov);
+    enableSlotDrag(ov, function () { return $('.tpg', ov); }, function () { if (wins.teams) rerender(wins.teams); last = ''; msg = '✓ สลับตำแหน่งแล้ว'; paint(); });
     ov.addEventListener('click', function (e) {
       if (e.target.closest('.tpx')) { ov.remove(); return; }
       var rm = e.target.closest('.trm');
@@ -1000,13 +1046,13 @@
     var map = {
       dex: function () { openDex(); },
       favs: function () { openFavs(); },
-      guide: function () { openStatic('guide', function () { return '📘 ' + B('Beginner Guide', 'คู่มือมือใหม่'); }, ico('guide'), guideHTML, 780, 640); },
-      iv: function () { openStatic('iv', function () { return '🔬 คู่มือ IV & EV'; }, ico('iv'), function () { return calcHTML() + ivHTML(); }, 900, 680, calcInit); },
+      guide: function () { openStatic('guide', function () { return 'คู่มือมือใหม่'; }, ico('guide'), guideHTML, 780, 640); },
+      iv: function () { openStatic('iv', function () { return 'คู่มือ IV/EV'; }, ico('iv'), function () { return calcHTML() + ivHTML(); }, 900, 680, calcInit); },
       mega: function () { openMegaDex(); },
-      natures: function () { openStatic('natures', function () { return '🧭 ตารางนิสัย (Natures)'; }, ico('natures'), naturesHTML, 860, 640); },
+      natures: function () { openStatic('natures', function () { return 'ตารางนิสัย'; }, ico('natures'), naturesHTML, 860, 640); },
       teams: function () { openTeams(); },
-      types: function () { openStatic('types', function () { return '🧪 ' + B('Type Chart', 'ตารางธาตุ'); }, ico('types'), typesHTML, 900, 660); },
-      about: function () { openStatic('about', function () { return 'ℹ️ ' + B('About', 'เกี่ยวกับ') + ' · ' + APP_STAGE; }, ico('about'), aboutHTML, 700, 520); }
+      types: function () { openStatic('types', function () { return 'ตารางธาตุ'; }, ico('types'), typesHTML, 900, 660); },
+      about: function () { openStatic('about', function () { return 'เกี่ยวกับ'; }, ico('about'), aboutHTML, 700, 520); }
     };
     if (map[name]) { map[name](); }
     closeMenus();
@@ -1015,11 +1061,11 @@
   /* ---------- desktop icons, start & version menus ---------- */
   function ico(k, n) { return 'img/ico/' + k + '-' + (n || 32) + '.png'; }
   var ICONS = [
-    ['guide', function () { return 'คู่มือสำหรับมือใหม่'; }],
+    ['guide', function () { return 'คู่มือมือใหม่'; }],
     ['dex', function () { return 'Pokédex'; }],
     ['types', function () { return 'ตารางธาตุ'; }],
     ['natures', function () { return 'ตารางนิสัย'; }],
-    ['iv', function () { return 'คู่มือ IV & EV'; }],
+    ['iv', function () { return 'คู่มือ IV/EV'; }],
     ['favs', function () { return 'รายการโปรด'; }],
     ['teams', function () { return 'ทีมโปรด'; }],
     ['about', function () { return 'เกี่ยวกับ'; }]
