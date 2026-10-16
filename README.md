@@ -6,7 +6,7 @@
 
 **คู่มือมือใหม่ในหน้าตา Windows XP · เวอร์ชันเกม: Pokémon Legends: Z-A (รวม Mega Dimension DLC)**
 
-![version](https://img.shields.io/badge/version-0.9.4%20Beta-f3b52b?style=flat-square)
+![version](https://img.shields.io/badge/version-0.10.1%20Beta-f3b52b?style=flat-square)
 ![pokemon](https://img.shields.io/badge/Pok%C3%A9mon-364-3b7de8?style=flat-square)
 ![stack](https://img.shields.io/badge/HTML%20%2B%20CSS%20%2B%20JS-no%20build-2e9d4a?style=flat-square)
 ![hosting](https://img.shields.io/badge/GitHub%20Pages-ready-0969da?style=flat-square)
@@ -264,3 +264,24 @@ python3 -m http.server 8000
 
 ### v0.9.4
 - แก้ข้อความ “ไม่พบโปเกมอน…” ในแท็บ Mega ให้อยู่กึ่งกลางเต็มความกว้าง
+
+### v0.9.5
+- หน้ารายละเอียด > ภาพรวม: เพิ่มกล่อง Training แสดงค่า EV ที่ได้เมื่อเอาชนะโปเกมอนแต่ละตัว (ข้อมูลจาก PokeAPI)
+
+### v0.9.6
+- เพิ่มเลข National Pokédex: แสดงในหัวหน้ารายละเอียด, เรียงตามเลข National ได้ทั้งแท็บ Pokédex/DLC และ Mega, ค้นหาด้วย n+เลข (เช่น n448)
+
+### v0.10.0
+- หน้าต่างเลือก Pokédex หลังบูตเสร็จ (Pokédex / Mega Dimension DLC / Mega / National) พร้อมสวิตช์ “ไม่ต้องถามอีก”
+- เมนูใหม่ การตั้งค่า: เปิด/ปิดหน้าต่างเลือก และเลือก Pokédex เริ่มต้นเมื่อปิด
+- เมนูใหม่ National Pokédex: รายการโปเกมอน #1–1025 ตามเจเนอเรชัน กดดูรายละเอียดได้เฉพาะตัวที่มีใน Z-A
+
+### v0.10.1
+- National Pokédex ใช้การ์ดเหมือน Pokédex ของเกม + แท็บแยกตาม Gen 1–9 + ฟิลเตอร์ธาตุ + ค้นหา (ชื่อ/โรมาจิ/เลข)
+- กดโปเกมอนที่ไม่มีใน Z-A ได้แล้ว: หน้ารายละเอียด (ค่าพลัง ชาร์ต ธาตุแพ้/ทน ความสามารถ Training ขนาด) พร้อมรูป Sugimori ครบ 1025 ตัว
+- ช่อง Training เพิ่ม อัตราจับ / Exp. พื้นฐาน / ความสนิทตั้งต้น / อัตราเติบโต
+- การตั้งค่า: Pokédex เริ่มต้นเป็น dropdown (National อยู่บนสุด แล้วจัดกลุ่มตามชื่อเกม); หน้าต่างเลือกตอนเปิดจัดกลุ่มแบบเดียวกัน
+- ชื่อเมนู/หน้าต่าง Pokédex ของเกมใช้ชื่อเกม “Pokémon Legends: Z-A”
+- ตัวเลือก Pokédex มี 2 อย่าง: National Pokédex (ก่อน) และ Pokémon Legends: Z-A (รวม DLC/Mega) · dropdown ในตั้งค่าเลือกได้เมื่อติ๊กเปิดหน้าต่างเลือกเท่านั้น · เมนู/ไอคอน National เรียงก่อนเกม · แก้ช่องว่างระหว่างเมนู Start กับ taskbar
+- ฟิลเตอร์ National: ทั้งหมด / Pokémon Legends: Z-A · เอาป้าย “ไม่มีใน Z-A” ออกจากการ์ดให้ไอคอนธาตุอยู่แนวเดียวกัน (ตัวที่ไม่มีในเกมยังพื้นเทา)
+- ใช้คีย์บอร์ดได้: ลูกศรเลื่อนระหว่างการ์ด · Enter/Space เปิดรายละเอียด · Home/End/PageUp/PageDown · ลูกศรซ้าย/ขวาในหน้ารายละเอียดเพื่อดูตัวก่อนหน้า/ถัดไป · กดลูกศรลงจากช่องค้นหาเพื่อเข้าการ์ด · Esc ปิดหน้าต่างที่เปิดอยู่

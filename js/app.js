@@ -63,7 +63,7 @@
     } catch (e) { }
   })();
   var lang = 'th';
-  var APP_VERSION = '0.9.4', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
+  var APP_VERSION = '0.10.1', APP_STAGE = 'Beta', APP_NAME = 'Pokedex XP', GAME_NAME = 'Pokémon Legends: Z-A';
   function B(en, th) { return lang === 'th' ? th : en; }
   function L(en, th) { return lang === 'th' ? th : en; }
   function tyName(t) { return lang === 'th' ? t + ' (' + TH_TYPE[t] + ')' : t; }
@@ -131,6 +131,8 @@
     { k: 'md', name: 'Mega Dimension DLC', sub: 'ต่อจาก Pokédex หลัก', from: NMAIN + 1, to: P.length }
   ];
   function dexNo(p) { return pad3(p.no); }
+  function pad4(n) { return String(n).padStart(4, '0'); }
+  function natNo(p) { var n = (window.ZA_NAT || {})[p.slug]; return n ? String(n).padStart(4, '0') : ''; }
   function secOf(p) { return p.sec === 'md' ? SECS[1] : SECS[0]; }
   function norm(s) { return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase(); }
   function tyIcon(t, cls) { return '<img class="' + (cls || 'tyi') + '" src="img/types/' + t.toLowerCase() + '.png" alt="' + t + '" title="' + tyName(t) + '">'; }
@@ -195,7 +197,7 @@
       '<button class="tbtn mn" aria-label="Minimize" title="Minimize">_</button><button class="tbtn mx" aria-label="Maximize" title="Maximize">□</button><button class="tbtn x" aria-label="Close" title="Close">✕</button></div>' +
       '<div class="wbody"></div><div class="statusbar"></div>';
     var w = { id: o.id, el: el, o: o, icon: o.icon || 'img/ico_pokedex.png' };
-    w.body = $('.wbody', el); w.status = $('.statusbar', el);
+    w.body = $('.wbody', el); w.status = $('.statusbar', el); w.body.tabIndex = -1;
     w.setTitle = function (t) { w.title = t; $('.tt', el).textContent = t; el.setAttribute('aria-label', t); updateTask(w); };
     w.setStatus = function (h) { w.status.innerHTML = h; };
     w.setTitle(typeof o.title === 'function' ? o.title() : o.title);
@@ -244,6 +246,7 @@
     var w = wins[id]; if (!w) return;
     w.el.classList.remove('min'); w.el.style.zIndex = ++zTop; activeId = id;
     Object.keys(wins).forEach(function (k) { wins[k].el.classList.toggle('active', k === id); });
+    if (!w.el.contains(document.activeElement)) w.body.focus({ preventScroll: true });
     refreshTasks();
   }
   function minimize(id) {
@@ -323,7 +326,7 @@
   var dexState = { q: '', type: '', build: '', sort: 'dex', col: {}, tab: 'main' };
   function openDex() {
     openWin({
-      id: 'dex', title: function () { return 'Pokédex'; }, icon: ico('dex'), max: true, w: 1000, h: 640,
+      id: 'dex', title: function () { return GAME_NAME; }, icon: ico('dex'), max: true, w: 1000, h: 640,
       render: function (w) {
         var typeOpts = '<option value="">' + L('All types', 'ทุกธาตุ') + '</option>' + D.types.map(function (t) { return '<option value="' + t + '">' + tyName(t) + '</option>'; }).join('');
         w.body.innerHTML = '<div class="tabs dtabs" role="tablist"><button class="tab" role="tab" data-dtab="main" aria-selected="true">📖 Pokédex</button><button class="tab" role="tab" data-dtab="md" aria-selected="false">✨ Mega Dimension DLC</button><button class="tab" role="tab" data-dtab="mega" aria-selected="false">🔶 Mega (' + allMegas().length + ')</button></div><div class="dpane" id="dexpane">' +
@@ -332,7 +335,7 @@
           '<div class="toolbar"><label class="grow"><span style="position:absolute;left:-9999px">' + L('Search', 'ค้นหา') + '</span><input type="search" id="q" placeholder="' + L('🔍 Search: Japanese / English / romaji / number, e.g. ピカチュウ, pika, 25', '🔍 ค้นหา: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข เช่น ピカチュウ, pika, 25') + '" style="width:100%" autocomplete="off"></label>' +
           '<select id="fb" aria-label="กรองตามสายการเล่น"><option value="">' + L('All play styles', 'ทุกสายการเล่น') + '</option>' + ['sweeper', 'bulky', 'tank', 'support'].map(function (k) { return '<option value="' + k + '">' + L('Best fit: ', 'เหมาะกับ: ') + L(ARCH[k][0], ARCH[k][1]) + '</option>'; }).join('') + '</select>' +
           '<select id="ft" aria-label=""' + L('Filter by type', 'กรองตามธาตุ') + '">' + typeOpts + '</select>' +
-          '<select id="so" aria-label="' + L('Sort', 'เรียงลำดับ') + '"><option value="dex">' + L('Sort: Pokédex order', 'เรียง: ลำดับ Pokédex') + '</option><option value="en">' + L('Sort: English name A–Z', 'เรียง: ชื่ออังกฤษ A–Z') + '</option><option value="bst">' + L('Sort: highest total stats', 'เรียง: ค่าพลังรวมสูงสุด') + '</option><option value="spe">' + L('Sort: fastest', 'เรียง: ความเร็วสูงสุด') + '</option><option value="fit">' + L('Sort: best fit for chosen style', 'เรียง: เหมาะกับสายที่เลือกที่สุด') + '</option></select></div>' +
+          '<select id="so" aria-label="' + L('Sort', 'เรียงลำดับ') + '"><option value="dex">' + L('Sort: Pokédex order', 'เรียง: ลำดับ Pokédex') + '</option><option value="nat">' + L('Sort: National Pokédex no.', 'เรียง: เลข National Pokédex') + '</option><option value="en">' + L('Sort: English name A–Z', 'เรียง: ชื่ออังกฤษ A–Z') + '</option><option value="bst">' + L('Sort: highest total stats', 'เรียง: ค่าพลังรวมสูงสุด') + '</option><option value="spe">' + L('Sort: fastest', 'เรียง: ความเร็วสูงสุด') + '</option><option value="fit">' + L('Sort: best fit for chosen style', 'เรียง: เหมาะกับสายที่เลือกที่สุด') + '</option></select></div>' +
           '<div id="grid" role="list"></div></div><div class="dpane" id="megapane" hidden></div>';
         if (!lsGet('za_welcome_seen')) $('#welcome', w.body).style.display = 'block';
         $('#wx', w.body).onclick = function () { $('#welcome', w.body).style.display = 'none'; lsSet('za_welcome_seen', '1'); };
@@ -345,9 +348,9 @@
             if (dexState.type && p.types.indexOf(dexState.type) < 0) return false;
             if (dexState.build && p.rank[0] !== dexState.build && p.rank[1] !== dexState.build) return false;
             if (!s) return true;
-            return norm(p.en).indexOf(s) >= 0 || norm(p.romaji).indexOf(s) >= 0 || p.jp.indexOf(q.value.trim()) >= 0 || String(p.no) === s || pad3(p.no) === s;
+            return norm(p.en).indexOf(s) >= 0 || norm(p.romaji).indexOf(s) >= 0 || p.jp.indexOf(q.value.trim()) >= 0 || String(p.no) === s || pad3(p.no) === s || (/^n\d+$/.test(s) && natNo(p) === s.slice(1).padStart(4, '0'));
           });
-          var sorters = { dex: function (a, b) { return a.id - b.id; }, en: function (a, b) { return a.en.localeCompare(b.en); }, bst: function (a, b) { return b.bst - a.bst || a.id - b.id; }, spe: function (a, b) { return b.stats[5] - a.stats[5] || a.id - b.id; }, fit: function (a, b) { var k = dexState.build; return k ? b.builds[k].fit - a.builds[k].fit || a.id - b.id : a.id - b.id; } };
+          var sorters = { dex: function (a, b) { return a.id - b.id; }, nat: function (a, b) { return natNo(a) - natNo(b) || a.id - b.id; }, en: function (a, b) { return a.en.localeCompare(b.en); }, bst: function (a, b) { return b.bst - a.bst || a.id - b.id; }, spe: function (a, b) { return b.stats[5] - a.stats[5] || a.id - b.id; }, fit: function (a, b) { var k = dexState.build; return k ? b.builds[k].fit - a.builds[k].fit || a.id - b.id : a.id - b.id; } };
           list.sort(sorters[dexState.sort]);
           var html = '', cur = dexState.tab === 'md' ? 'md' : 'main', shown = 0, curTot = 0;
           SECS.forEach(function (sc) {
@@ -417,6 +420,10 @@
     var l = megaList(p); if (!l.length) return '';
     return '<div class="megabox"><div class="bl">🔶 Mega Evolution — กดเพื่อดูค่าพลัง ธาตุ และตารางแพ้/ชนะของร่าง Mega</div><div class="mgs">' + l.map(function (m) { return '<button type="button" class="btn mgb' + (mg && mg.s === m.s ? ' on' : '') + '" data-mega="' + m.s + '">' + esc(m.jp) + ' <small>' + esc(m.n) + '</small></button>'; }).join('') + (mg ? '<button type="button" class="btn" data-mega-off="1">↩ กลับร่างปกติ</button>' : '') + '</div></div>';
   }
+  function evGroup(p) {
+    var n = (window.ZA_NAT || {})[p.slug], d = n && (window.ZA_NATDEX || [])[n - 1];
+    return d ? trainBox(d) : '';
+  }
   function tabOverview(p) {
     var n = p.nature, g = p.gender, gt = GENDER_TXT[g.kind], cs = COSM[g.cosmetic];
     return '<div class="cols"><div><div class="group"><span class="gt">' + L('Base stats', 'ค่าพลังพื้นฐาน') + '</span>' + statBars(p) + '</div>' +
@@ -425,7 +432,7 @@
       '<div style="margin:4px 0"><span class="chipw up">▲ ' + L('Raises ', 'เพิ่ม ') + statName(n.up) + '</span><span class="chipw dn">▼ ' + L('Lowers ', 'ลด ') + statName(n.down) + '</span></div>' +
       '<p style="margin:4px 0">' + esc(natureWhy(p)) + '</p>' +
       '<div class="note">' + L('💡 Got a different nature? Use a <b>Mint</b> to change the nature’s <i>effect</i> to ' + n.name + ' (shop locations in the <a href="#/iv" data-open="iv">IV/EV guide</a>).', '💡 ได้นิสัยอื่นมาก็ไม่ต้องเริ่มใหม่ — ใช้ <b>Mint</b> เปลี่ยน “ผลของนิสัย” เป็น ' + n.name + ' ได้ (ดูที่ซื้อใน <a href="#/iv" data-open="iv">คู่มือ IV/EV</a>)') + '</div></div>' +
-      '<div class="group"><span class="gt">' + L('⚥ Best gender', '⚥ เพศที่ดีที่สุด') + '</span><b>' + esc(g.ratio === 'genderless' ? L('Genderless', 'ไม่มีเพศ') : g.ratio) + '</b><p style="margin:4px 0">' + esc(L(gt[0], gt[1])) + '</p>' +
+      evGroup(p) + '<div class="group"><span class="gt">' + L('⚥ Best gender', '⚥ เพศที่ดีที่สุด') + '</span><b>' + esc(g.ratio === 'genderless' ? L('Genderless', 'ไม่มีเพศ') : g.ratio) + '</b><p style="margin:4px 0">' + esc(L(gt[0], gt[1])) + '</p>' +
       (cs ? '<p style="margin:4px 0;color:#444">' + L('Looks: ', 'รูปลักษณ์: ') + esc(L(cs[0], cs[1])) + '</p>' : '') + '</div>' + '<div class="note">' + L('Role: ', 'สายการเล่น: ') + '<b>' + L(ARCH[p.arch][0], ARCH[p.arch][1]) + '</b> · ' + L('mainly hits with ', 'ตีหลักด้วย') + '<b>' + (p.catDom === 'P' ? L('physical moves', 'ท่ากายภาพ') : L('special moves', 'ท่าพิเศษ')) + '</b></div>' + '</div></div>';
   }
   function padSlot(b) {
@@ -616,7 +623,7 @@
         return '<button class="bld' + (k === key ? ' on' : '') + '" data-b="' + k + '" aria-pressed="' + (k === key) + '"><span class="bn">' + MEDAL[n] + ' ' + L(ARCH[k][0], ARCH[k][1]) + '</span><span class="bf">' + RANKTXT[n] + ' · ' + f + '%</span><span class="bb"><i style="width:' + f + '%"></i></span></button>';
       }).join('') + '</div><div class="bd">' + L(ARCH_DESC[key][0], ARCH_DESC[key][1]) + '</div></div>';
     w.body.innerHTML = '<div class="hd"><div class="big" data-n="' + dexNo(p) + '">' + (mg ? megaArt(mg.s, 200, mg.n) : sprite(p, 200)) + '</div><div><h2>' + esc(mg ? mg.jp : p.jp) + ' <span class="hrm"><span class="hsep">·</span> ' + esc(mg ? 'Mega ' + p.romaji : p.romaji) + '</span> ' + heartBtn(p.id, 'hb') + '</h2>' +
-      '<div class="rom en2">' + esc(mg ? mg.n : p.en) + ' · #' + dexNo(p) + (p.sec === 'md' ? ' · Mega Dimension DLC' : '') + '</div><div class="sub">' + v.types.map(function (t) { return tyChip(t); }).join(' ') + '</div>' +
+      '<div class="rom en2">' + esc(mg ? mg.n : p.en) + ' · #' + dexNo(p) + (natNo(p) ? ' · National #' + natNo(p) : '') + (p.sec === 'md' ? ' · Mega Dimension DLC' : '') + '</div><div class="sub">' + v.types.map(function (t) { return tyChip(t); }).join(' ') + '</div>' +
       '<div><span class="chipw" style="background:#555">' + L(ARCH[key][0], ARCH[key][1]) + '</span><span class="chipw" style="background:#7a5bb5">' + L('Nature ', 'นิสัย ') + v.nature.name + '</span></div><div style="margin-top:6px"><button type="button" class="btn" data-addteam="1">➕ เพิ่มเข้าทีม</button></div></div></div>' + megaBar(p, mg) + blds +
       '<div class="tabs" role="tablist">' + T.map(function (t) { return '<button class="tab" role="tab" data-tab="' + t[0] + '" aria-selected="' + (t[0] === w.tab) + '">' + t[1] + '</button>'; }).join('') + '</div>' +
       '<div class="tabpane" role="tabpanel">' + T.filter(function (t) { return t[0] === w.tab; })[0][2](v) + '</div>';
@@ -866,15 +873,15 @@
     var ms = megaState;
     pane.innerHTML = '<div class="toolbar"><label class="grow"><span style="position:absolute;left:-9999px">ค้นหา</span><input type="search" class="mq" placeholder="🔍 ค้นหา: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข เช่น ピカチュウ, pika, 25" value="' + esc(dexState.q) + '" style="width:100%"></label>' +
       '<select class="mt" aria-label="กรองตามธาตุ"><option value="">ทุกธาตุ</option>' + D.types.map(function (t) { return '<option value="' + t + '"' + (ms.type === t ? ' selected' : '') + '>' + tyName(t) + '</option>'; }).join('') + '</select>' +
-      '<select class="ms" aria-label="เรียง"><option value="dex"' + (ms.sort === 'dex' ? ' selected' : '') + '>เรียง: ลำดับ Pokédex</option><option value="bst"' + (ms.sort === 'bst' ? ' selected' : '') + '>เรียง: ค่าพลังรวมสูงสุด</option><option value="en"' + (ms.sort === 'en' ? ' selected' : '') + '>เรียง: ชื่ออังกฤษ A–Z</option></select></div>' +
+      '<select class="ms" aria-label="เรียง"><option value="dex"' + (ms.sort === 'dex' ? ' selected' : '') + '>เรียง: ลำดับ Pokédex</option><option value="nat"' + (ms.sort === 'nat' ? ' selected' : '') + '>เรียง: เลข National Pokédex</option><option value="bst"' + (ms.sort === 'bst' ? ' selected' : '') + '>เรียง: ค่าพลังรวมสูงสุด</option><option value="en"' + (ms.sort === 'en' ? ' selected' : '') + '>เรียง: ชื่ออังกฤษ A–Z</option></select></div>' +
       '<div class="note">แสดงเฉพาะร่าง Mega · กดการ์ดเพื่อเปิดหน้ารายละเอียดของโปเกมอนตัวนั้นในร่าง Mega</div><div class="mgrid grid" role="list"></div>';
     function paint() {
       var q = norm(dexState.q.trim().replace(/^#/, '')), l = allMegas().filter(function (e) {
         if (ms.type && e.mg.ty.indexOf(ms.type) < 0) return false;
         if (!q) return true;
-        return norm(e.p.en + ' ' + e.p.jp + ' ' + e.p.romaji + ' ' + e.mg.n + ' ' + e.mg.jp + ' ' + dexNo(e.p)).indexOf(q) >= 0;
+        return norm(e.p.en + ' ' + e.p.jp + ' ' + e.p.romaji + ' ' + e.mg.n + ' ' + e.mg.jp + ' ' + dexNo(e.p) + ' n' + natNo(e.p)).indexOf(q) >= 0;
       });
-      if (ms.sort === 'bst') l.sort(function (a, b) { return b.bst - a.bst; }); else if (ms.sort === 'en') l.sort(function (a, b) { return a.mg.n < b.mg.n ? -1 : 1; });
+      if (ms.sort === 'nat') l.sort(function (a, b) { return natNo(a.p) - natNo(b.p) || a.p.id - b.p.id; }); else if (ms.sort === 'bst') l.sort(function (a, b) { return b.bst - a.bst; }); else if (ms.sort === 'en') l.sort(function (a, b) { return a.mg.n < b.mg.n ? -1 : 1; });
       $('.mgrid', pane).innerHTML = l.length ? l.map(megaCard).join('') : '<div class="empty">ไม่พบโปเกมอนที่ตรงกับ “' + esc(dexState.q) + '” ในแท็บนี้</div>';
       w.setStatus('<span>ร่าง Mega ' + l.length + ' / ' + allMegas().length + ' รูปแบบ</span>');
     }
@@ -885,6 +892,166 @@
     pane.addEventListener('click', function (e) { var h = e.target.closest('.heart'); if (h) { toggleFav(+h.dataset.id); return; } var c = e.target.closest('.card'); if (c && c.dataset.ms) openMega(+c.dataset.mid, c.dataset.ms); });
   }
   function openMegaDex() { openDex(); if (wins.dex && wins.dex.setTab) { focus('dex'); wins.dex.setTab('mega'); } }
+
+
+  /* ---------- v0.10.0: settings, start-up Pokédex picker, National Pokédex ---------- */
+  var DEXKINDS = [
+    { k: 'nat', g: 'nat', ic: 'nat', t: function () { return 'National Pokédex'; }, d: function () { return L('All 1025 Pokémon by national no.', 'โปเกมอนทั้ง 1025 ตัวตามเลข National'); } },
+    { k: 'main', g: 'za', ic: 'dex', t: function () { return GAME_NAME; }, d: function () { return L('Game Pokédex incl. Mega Dimension DLC & Mega forms', 'Pokédex ของเกม รวม DLC และร่าง Mega'); } }
+  ];
+  var settings = (function () { var s = null; try { s = JSON.parse(lsGet('za_set')); } catch (e) { } s = s || {}; return { ask: s.ask !== false, def: ['main', 'nat'].indexOf(s.def) >= 0 ? s.def : 'main' }; })();
+  function saveSettings() { lsSet('za_set', JSON.stringify(settings)); }
+  function launchDex(k) {
+    if (k === 'nat') { openApp('nat'); return; }
+    if (k === 'mega') { openMegaDex(); return; }
+    dexState.tab = k; openDex(); if (wins.dex && wins.dex.setTab) { focus('dex'); wins.dex.setTab(k); }
+  }
+  function dkBtn(d, cls) { return '<button type="button" class="dpopt ' + (cls || '') + '" data-k="' + d.k + '"><img class="px" src="' + ico(d.ic, 48) + '" alt=""><b>' + d.t() + '</b><small>' + d.d() + '</small></button>'; }
+  function openDexPicker() {
+    var old = document.getElementById('dexpick'); if (old) old.remove();
+    var ov = document.createElement('div'); ov.id = 'dexpick'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', L('Choose a Pokédex', 'เลือก Pokédex'));
+    ov.innerHTML = '<div class="dpbox"><div class="dplogo"><img class="px" src="' + ico('dex', 48) + '" alt=""> ' + APP_NAME + '</div><h2>' + L('Which Pokédex today?', 'วันนี้อยากดู Pokédex ไหน?') + '</h2>' +
+      '<div class="dpgrid">' + DEXKINDS.map(function (d) { return dkBtn(d); }).join('') + '</div>' +
+      '<label class="dptog"><span>' + L('Always open this one and don’t ask again', 'ใช้ตัวที่เลือกทุกครั้ง ไม่ต้องถามอีก') + '</span><input type="checkbox" id="dpremember" role="switch"><i class="sw"></i></label>' +
+      '<div class="dphint">' + L('Change this any time in Settings', 'เปลี่ยนได้ตลอดที่เมนู การตั้งค่า') + '</div></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function (e) {
+      var b = e.target.closest('.dpopt'); if (!b) return;
+      if ($('#dpremember', ov).checked) { settings.ask = false; settings.def = b.dataset.k; saveSettings(); if (wins.settings) rerender(wins.settings); }
+      ov.remove(); launchDex(b.dataset.k);
+    });
+    ov.addEventListener('keydown', function (e) { if (e.key === 'Escape') { ov.remove(); launchDex(settings.def); } });
+    var f = $('.dpopt', ov); if (f) f.focus();
+  }
+  function defSelect() {
+    var opt = function (d) { return '<option value="' + d.k + '"' + (settings.def === d.k ? ' selected' : '') + '>' + d.t() + '</option>'; };
+    return '<select id="st-def" aria-label="' + L('Default Pokédex', 'Pokédex เริ่มต้น') + '"' + (settings.ask ? '' : ' disabled') + '>' + DEXKINDS.map(opt).join('') + '</select>';
+  }
+  function settingsHTML() {
+    return '<div class="stg"><div class="group"><span class="gt">' + L('Start-up', 'ตอนเปิดเว็บ') + '</span>' +
+      '<label class="stgrow"><input type="checkbox" id="st-ask"' + (settings.ask ? ' checked' : '') + '> <span><b>' + L('Show the “Which Pokédex?” window after start-up', 'แสดงหน้าต่างเลือก Pokédex หลังเปิดเว็บ') + '</b><small>' + L('Turn off to skip it and open your default Pokédex directly.', 'ปิดเพื่อข้ามหน้าต่างนี้ แล้วเปิด Pokédex ที่ตั้งเป็นค่าเริ่มต้นทันที') + '</small></span></label></div>' +
+      '<div class="group"><span class="gt">' + L('Default Pokédex', 'Pokédex เริ่มต้น') + '</span>' + defSelect() +
+      '<p class="stnote">' + L('Selectable only while the option above is ticked.', 'เลือกได้เฉพาะเมื่อติ๊กเปิดหน้าต่างเลือกด้านบน') + '</p></div></div>';
+  }
+  function openSettings() {
+    openStatic('settings', function () { return L('Settings', 'การตั้งค่า'); }, ico('settings'), settingsHTML, 520, 400, function (w) {
+      w.body.addEventListener('change', function (e) {
+        if (e.target.id === 'st-ask') { settings.ask = e.target.checked; $('#st-def', w.body).disabled = !settings.ask; }
+        else if (e.target.id === 'st-def') settings.def = e.target.value;
+        else return;
+        saveSettings();
+      });
+    });
+  }
+
+  /* ---------- v0.10.1: National Pokédex (cards + generation tabs + type filter) and detail for species not in Z-A ---------- */
+  var NDX = window.ZA_NATDEX || [], NBYN = null;
+  var GEN_REGION = ['', 'Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova', 'Kalos', 'Alola', 'Galar', 'Paldea'];
+  var GROWTH = { 'slow': 'Slow', 'medium': 'Medium Fast', 'fast': 'Fast', 'medium-slow': 'Medium Slow', 'slow-then-very-fast': 'Erratic', 'fast-then-very-slow': 'Fluctuating' };
+  function zaByNat(n) { if (!NBYN) { NBYN = {}; P.forEach(function (p) { var k = (window.ZA_NAT || {})[p.slug]; if (k && !NBYN[k]) NBYN[k] = p; }); } return NBYN[n]; }
+  function natArt(n, box) {
+    var p = zaByNat(n); if (p) return sprite(p, box);
+    var k = Math.round(box * 0.84);
+    return '<span class="spb" style="width:' + box + 'px;height:' + box + 'px"><img src="img/nat/' + n + '.webp" alt="' + esc(NDX[n - 1][0]) + '" style="width:' + k + 'px;height:' + k + 'px" loading="lazy" onerror="this.parentNode.innerHTML=\'' + PH + '\'"></span>';
+  }
+  function natCardHTML(n) {
+    var d = NDX[n - 1], p = zaByNat(n);
+    return '<div class="cw"><button type="button" class="card' + (p ? '' : ' nz') + '" role="listitem" data-nat="' + n + '" aria-label="' + esc(d[0]) + '"><span class="sp">' + natArt(n, 92) + '</span><span class="no">#' + pad4(n) + '</span>' +
+      '<span class="jp">' + esc(d[2]) + '</span><span class="en">' + esc(d[3]) + '</span><span class="enn">(' + esc(d[0]) + ')</span>' + tyRow(d[4]) + '</button>' + (p ? heartBtn(p.id, 'hc') : '') + '</div>';
+  }
+  function trainBox(d) {
+    var e = d[9], ch = [];
+    STAT_KEYS.forEach(function (k, i) { if (e[i]) ch.push('<span class="chipw ev">+' + e[i] + ' ' + statName(k) + '</span>'); });
+    var row = function (a, b) { return '<div class="kvr"><span>' + a + '</span><b>' + b + '</b></div>'; };
+    return '<div class="group"><span class="gt">' + L('💪 Training', '💪 Training — การเทรน') + '</span>' +
+      '<div class="kvr"><span>' + L('EV yield', 'EV ที่ได้เมื่อเอาชนะ') + '</span><b>' + (ch.length ? ch.join('') : L('None', 'ไม่ให้ EV')) + '</b></div>' +
+      row(L('Catch rate', 'อัตราจับ'), d[10] + ' <small>/ 255</small>') + row(L('Base Exp.', 'Exp. พื้นฐาน'), d[11]) + row(L('Base friendship', 'ความสนิทตั้งต้น'), d[12]) + row(L('Growth rate', 'อัตราเติบโต'), GROWTH[d[13]] || d[13]) + '</div>';
+  }
+  function natMatchHTML(types) {
+    var mm = megaMatch(types), w4 = mm.weak.filter(function (x) { return x.mult >= 4; }), w2 = mm.weak.filter(function (x) { return x.mult === 2; });
+    var chips = function (arr, f) { return arr.length ? arr.map(f).join(' ') : '<span style="color:#666">—</span>'; };
+    return '<div class="group"><span class="gt">' + L('❌ Weak to', '❌ แพ้ธาตุ (โดนแรง)') + '</span>' + (w4.length ? '<div><b style="color:#c0392b">×4</b> ' + chips(w4, function (x) { return tyChip(x.type); }) + '</div>' : '') +
+      '<div style="margin-top:4px"><b style="color:#d9822b">×2</b> ' + chips(w2, function (x) { return tyChip(x.type); }) + '</div></div>' +
+      '<div class="group"><span class="gt">' + L('🛡️ Resists / immune', '🛡️ ทนทาน / ไม่โดน') + '</span>' + chips(mm.resist, function (x) { return tyChip(x.type, ' <b>' + mult2txt(x.mult) + '</b>'); }) +
+      (mm.immune.length ? '<div style="margin-top:4px"><b>×0</b> ' + mm.immune.map(function (t) { return tyChip(t); }).join(' ') + '</div>' : '') + '</div>';
+  }
+  function natMonHTML(n) {
+    var d = NDX[n - 1], base = d[5], bst = base.reduce(function (a, b) { return a + b; }, 0), lab = STAT_KEYS.map(statName);
+    var fake = { stats: base, bst: bst };
+    var views = [{ name: L('Base stats', 'ค่าพลังพื้นฐาน'), o: { labels: lab, max: radarMax(base, 60), series: [ser(base, RB)], tags: base, alt: 'ค่าพลังพื้นฐาน' } }];
+    var ab = d[6].map(function (a) { return '<div class="kvr"><span>' + (a[1] ? L('Hidden ability', 'ความสามารถแฝง') : L('Ability', 'ความสามารถ')) + '</span><b>' + esc(a[0]) + '</b></div>'; }).join('');
+    return '<div class="hd"><div class="big" data-n="' + pad4(n) + '">' + natArt(n, 200) + '</div><div><h2>' + esc(d[2]) + ' <span class="hrm"><span class="hsep">·</span> ' + esc(d[3]) + '</span></h2>' +
+      '<div class="rom en2">' + esc(d[0]) + ' · National #' + pad4(n) + ' · ' + L('Generation ', 'เจเนอเรชัน ') + d[1] + ' (' + GEN_REGION[d[1]] + ')</div><div class="sub">' + d[4].map(function (t) { return tyChip(t); }).join(' ') + '</div>' +
+      '<div><span class="chipw" style="background:#888">' + L('Not in ', 'ไม่มีใน ') + GAME_NAME + '</span></div></div></div>' +
+      '<div class="note">' + L('This Pokémon is not in ' + GAME_NAME + ', so game-specific advice (nature, moves, builds) isn’t available — general data only.', 'โปเกมอนตัวนี้ไม่มีใน ' + GAME_NAME + ' จึงไม่มีคำแนะนำเฉพาะเกม (นิสัย ท่า สายการเล่น) — แสดงเฉพาะข้อมูลทั่วไป') + '</div>' +
+      '<div class="cols"><div><div class="group"><span class="gt">' + L('Base stats', 'ค่าพลังพื้นฐาน') + '</span>' + statBars(fake) + '</div><div class="group"><span class="gt">⬡ ' + L('Stat chart', 'ชาร์ตค่าพลัง') + '</span>' + rvHTML(views, 0) + '</div></div>' +
+      '<div>' + natMatchHTML(d[4]) + '<div class="group"><span class="gt">' + L('✨ Abilities', '✨ ความสามารถ') + '</span>' + ab + '</div>' + trainBox(d) +
+      '<div class="group"><span class="gt">' + L('📏 Size', '📏 ขนาด') + '</span><div class="kvr"><span>' + L('Height', 'ส่วนสูง') + '</span><b>' + (d[7] / 10).toFixed(1) + ' m</b></div><div class="kvr"><span>' + L('Weight', 'น้ำหนัก') + '</span><b>' + (d[8] / 10).toFixed(1) + ' kg</b></div></div></div></div>';
+  }
+  function openNatMon(n) {
+    n = +n; if (!NDX[n - 1]) return;
+    var p = zaByNat(n); if (p) { openMon(p.id); return; }
+    openWin({
+      id: 'natmon-' + n, title: function () { return '#' + pad4(n) + ' ' + NDX[n - 1][2] + ' (' + NDX[n - 1][0] + ')'; }, icon: ico('nat'), w: 900, h: 700,
+      render: function (w) {
+        w.natN = w.natN || n;
+        function paint() {
+          var k = w.natN, keep = w.body.scrollTop; w.body.innerHTML = natMonHTML(k); w.body.scrollTop = keep;
+          w.setTitle('#' + pad4(k) + ' ' + NDX[k - 1][2] + ' (' + NDX[k - 1][0] + ')');
+          w.setStatus('<button class="btn" data-nav="-1"' + (k <= 1 ? ' disabled' : '') + '>◀ ' + L('Prev', 'ก่อนหน้า') + '</button><button class="btn" data-nav="1"' + (k >= NDX.length ? ' disabled' : '') + '>' + L('Next', 'ถัดไป') + ' ▶</button><span style="margin-left:auto">National #' + pad4(k) + ' / ' + NDX.length + '</span>');
+        }
+        w.status.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-nav]'); if (!b || b.disabled) return;
+          var k = w.natN + (+b.dataset.nav), q = zaByNat(k);
+          if (q) { openMon(q.id); return; }
+          w.natN = k; paint();
+        });
+        paint();
+      }
+    });
+  }
+  var natState = { q: '', type: '', f: '', gen: 1 };
+  function openNational() {
+    openWin({
+      id: 'nat', title: function () { return 'National Pokédex'; }, icon: ico('nat'), max: true, w: 1000, h: 640,
+      render: function (w) {
+        var typeOpts = '<option value="">' + L('All types', 'ทุกธาตุ') + '</option>' + D.types.map(function (t) { return '<option value="' + t + '">' + tyName(t) + '</option>'; }).join('');
+        var tabs = ''; for (var g = 1; g <= 9; g++) tabs += '<button class="tab" role="tab" data-gtab="' + g + '" aria-selected="false">Gen ' + g + ' <b></b></button>';
+        w.body.innerHTML = '<div class="tabs dtabs" role="tablist">' + tabs + '</div><div class="toolbar"><input type="search" class="grow" id="nq" placeholder="' + L('🔍 Search: Japanese / English / romaji / number, e.g. 448', '🔍 ค้นหา: ชื่อญี่ปุ่น / อังกฤษ / โรมาจิ / เลข เช่น 448') + '" aria-label="' + L('Search', 'ค้นหา') + '" autocomplete="off">' +
+          '<select id="nt" aria-label="' + L('Filter by type', 'กรองตามธาตุ') + '">' + typeOpts + '</select>' +
+          '<select id="nf" aria-label="' + L('Availability', 'มีในเกม') + '"><option value="">' + L('All', 'ทั้งหมด') + '</option><option value="za">' + GAME_NAME + '</option>'+'</select></div><div id="ngrid" role="list"></div>';
+        var q = $('#nq', w.body), ft = $('#nt', w.body), f = $('#nf', w.body), grid = $('#ngrid', w.body);
+        q.value = natState.q; ft.value = natState.type; f.value = natState.f;
+        function draw() {
+          natState.q = q.value; natState.type = ft.value; natState.f = f.value;
+          var s = norm(q.value.trim().replace(/^#|^n(?=\d)/i, '')), raw = q.value.trim(), per = {}, cur = [];
+          NDX.forEach(function (d, i) {
+            var n = i + 1, p = zaByNat(n);
+            if (ft.value && d[4].indexOf(ft.value) < 0) return;
+            if (f.value === 'za' && !p) return; if (f.value === 'no' && p) return;
+            if (s && !(norm(d[0]).indexOf(s) >= 0 || norm(d[3]).indexOf(s) >= 0 || d[2].indexOf(raw) >= 0 || String(n) === s || pad4(n) === s)) return;
+            per[d[1]] = (per[d[1]] || 0) + 1; if (d[1] === natState.gen) cur.push(n);
+          });
+          [].forEach.call(w.body.querySelectorAll('[data-gtab]'), function (b) { var g = +b.dataset.gtab; b.setAttribute('aria-selected', g === natState.gen); $('b', b).textContent = per[g] || 0; b.title = GEN_REGION[g]; });
+          grid.innerHTML = cur.length ? '<div class="grid">' + cur.map(natCardHTML).join('') + '</div>' : '<div class="empty">' + L('No Pokémon match in this generation', 'ไม่พบโปเกมอนที่ตรงกันใน Gen นี้') + (raw ? ' “' + esc(raw) + '”' : '') + '</div>';
+          w.setStatus('<span>' + L('Gen ', 'Gen ') + natState.gen + ' · ' + GEN_REGION[natState.gen] + ': ' + L('showing ', 'แสดง ') + cur.length + '</span><span style="margin-left:auto">' + L('Total in National Pokédex: ', 'ทั้งหมดใน National: ') + NDX.length + '</span>');
+        }
+        q.addEventListener('input', function () {
+          draw();
+          if (!w.body.querySelector('.card') && q.value.trim()) { /* jump to the first generation that has a match */
+            for (var g = 1; g <= 9; g++) { if (+w.body.querySelector('[data-gtab="' + g + '"] b').textContent > 0) { natState.gen = g; draw(); break; } }
+          }
+        });
+        ft.addEventListener('change', draw); f.addEventListener('change', draw);
+        w.body.addEventListener('click', function (e) {
+          var t = e.target.closest('[data-gtab]'); if (t) { natState.gen = +t.dataset.gtab; draw(); w.body.scrollTop = 0; return; }
+          var h = e.target.closest('.heart'); if (h) { toggleFav(+h.dataset.id); return; }
+          var c = e.target.closest('.card[data-nat]'); if (c) openNatMon(+c.dataset.nat);
+        });
+        draw();
+      }
+    });
+  }
 
   /* favourite teams: 10 teams x 6 slots, saved in this browser */
   var NTEAM = 6, teams = loadTeams();
@@ -1049,6 +1216,8 @@
       guide: function () { openStatic('guide', function () { return 'คู่มือมือใหม่'; }, ico('guide'), guideHTML, 780, 640); },
       iv: function () { openStatic('iv', function () { return 'คู่มือ IV/EV'; }, ico('iv'), function () { return calcHTML() + ivHTML(); }, 900, 680, calcInit); },
       mega: function () { openMegaDex(); },
+      nat: function () { openNational(); },
+      settings: function () { openSettings(); },
       natures: function () { openStatic('natures', function () { return 'ตารางนิสัย'; }, ico('natures'), naturesHTML, 860, 640); },
       teams: function () { openTeams(); },
       types: function () { openStatic('types', function () { return 'ตารางธาตุ'; }, ico('types'), typesHTML, 900, 660); },
@@ -1062,12 +1231,14 @@
   function ico(k, n) { return 'img/ico/' + k + '-' + (n || 32) + '.png'; }
   var ICONS = [
     ['guide', function () { return 'คู่มือมือใหม่'; }],
-    ['dex', function () { return 'Pokédex'; }],
+    ['nat', function () { return 'National Pokédex'; }],
+    ['dex', function () { return GAME_NAME; }],
     ['types', function () { return 'ตารางธาตุ'; }],
     ['natures', function () { return 'ตารางนิสัย'; }],
     ['iv', function () { return 'คู่มือ IV/EV'; }],
     ['favs', function () { return 'รายการโปรด'; }],
     ['teams', function () { return 'ทีมโปรด'; }],
+    ['settings', function () { return L('Settings', 'การตั้งค่า'); }],
     ['about', function () { return 'เกี่ยวกับ'; }]
   ];
   function buildIcons() {
@@ -1097,7 +1268,37 @@
     }
   };
   document.addEventListener('click', function (e) { if (!e.target.closest('.menu')) closeMenus(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenus(); });
+  var menuWasOpen = false;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { menuWasOpen = !!document.querySelector('.menu.open'); closeMenus(); } });
+  /* v0.10.1: keyboard navigation — arrows move between cards, Enter/Space opens, Home/End/PageUp/PageDown, ←/→ prev/next in detail windows */
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey || e.ctrlKey || e.metaKey || document.getElementById('dexpick')) return;
+    var w = wins[activeId]; if (!w) return;
+    var t = e.target, tag = t.tagName, k = e.key;
+    if (k === 'Escape') { if (!menuWasOpen && tag !== 'SELECT' && !w.el.classList.contains('min')) { e.preventDefault(); closeWin(activeId); } menuWasOpen = false; return; }
+    var isCard = t.classList && t.classList.contains('card');
+    var cards = [].slice.call(w.body.querySelectorAll('.card')).filter(function (c) { return c.offsetParent; });
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+      if (tag === 'INPUT' && t.type === 'search' && k === 'ArrowDown' && cards.length && w.body.contains(t)) { e.preventDefault(); cards[0].focus(); }
+      return;
+    }
+    if (!w.body.contains(t) && t !== document.body) return;
+    var nav = w.status.querySelector('[data-nav]');
+    if (cards.length && (isCard || t === document.body || t === w.body)) {
+      var i = cards.indexOf(t), n = i, cols = 1;
+      if (i >= 0) { var top = cards[i].getBoundingClientRect().top; cols = cards.filter(function (c) { return c.parentNode.parentNode === cards[i].parentNode.parentNode && Math.abs(c.getBoundingClientRect().top - cards[0].getBoundingClientRect().top) < 4; }).length || 1; }
+      if (k === 'ArrowRight') n = i < 0 ? 0 : i + 1; else if (k === 'ArrowLeft') n = i < 0 ? 0 : i - 1;
+      else if (k === 'ArrowDown') n = i < 0 ? 0 : i + cols; else if (k === 'ArrowUp') n = i < 0 ? 0 : i - cols;
+      else if (k === 'PageDown') n = i < 0 ? 0 : i + cols * 3; else if (k === 'PageUp') n = i < 0 ? 0 : i - cols * 3;
+      else if (k === 'Home') n = 0; else if (k === 'End') n = cards.length - 1; else return;
+      if (i < 0 && k !== 'Home' && k !== 'End') n = 0;
+      e.preventDefault(); n = Math.max(0, Math.min(cards.length - 1, n));
+      cards[n].focus(); cards[n].scrollIntoView({ block: 'nearest' });
+    } else if ((k === 'ArrowRight' || k === 'ArrowLeft') && nav && !isCard && tag !== 'BUTTON') {
+      var b = w.status.querySelector('[data-nav="' + (k === 'ArrowRight' ? 1 : -1) + '"]'); if (b && !b.disabled) { e.preventDefault(); b.click(); }
+    }
+  });
+  document.addEventListener('click', function (e) { var wb = e.target.closest && e.target.closest('.wbody'); if (wb && !e.target.closest('button,a,input,select,textarea,label,[tabindex]') && wb.tabIndex === -1) wb.focus({ preventScroll: true }); });
   startMenu.addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.app) openApp(b.dataset.app);
@@ -1128,7 +1329,7 @@
   function route() {
     var h = location.hash.replace(/^#\/?/, ''), m = h.match(/^mon\/(\d+)/);
     if (m) { openMon(+m[1]); return; }
-    if (['guide', 'iv', 'types', 'about', 'mega', 'natures', 'teams'].indexOf(h) >= 0) openApp(h);
+    if (['guide', 'iv', 'types', 'about', 'mega', 'natures', 'teams', 'nat', 'settings'].indexOf(h) >= 0) openApp(h);
   }
   window.addEventListener('hashchange', route);
   document.documentElement.lang = lang;
@@ -1143,7 +1344,9 @@
   })();
   $('#favbtn').onclick = function (e) { e.stopPropagation(); openApp('favs'); };
   updateFavCount();
-  openDex(); route();
+  var hadHash = !!location.hash;
+  if (hadHash) { openDex(); route(); }
+  function launch() { if (hadHash) return; if (settings.ask) openDexPicker(); else launchDex(settings.def); }
   if (location.hash) history.replaceState(null, '', location.pathname + location.search);
 
   /* ---------- boot screen ---------- */
@@ -1163,7 +1366,7 @@
     }, 1100);
     $('#pct', boot).textContent = '0%';
     var fast = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    function endBoot() { if (done) return; done = true; SND.play('start'); clearInterval(iv); clearInterval(swap); boot.classList.add('out'); setTimeout(function () { boot.remove(); }, 500); }
+    function endBoot() { if (done) return; done = true; SND.play('start'); clearInterval(iv); clearInterval(swap); boot.classList.add('out'); setTimeout(function () { boot.remove(); }, 500); launch(); }
     var iv = setInterval(function () {
       pct = Math.min(100, pct + 2 + Math.random() * 5);
       for (var n = 0; n < SEG; n++) cells[n].className = n < Math.floor(pct / 100 * SEG) ? 'on' : '';
@@ -1175,5 +1378,5 @@
       }
     }, fast ? 10 : 140);
     boot.addEventListener('click', endBoot);
-  }
+  } else launch();
 })();

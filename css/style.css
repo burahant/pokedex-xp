@@ -672,3 +672,55 @@ img.sp9{image-rendering:auto;max-width:none;max-height:none;object-fit:contain}
 .dragghost{position:fixed !important;z-index:99999;pointer-events:none;opacity:.92;box-shadow:3px 4px 12px rgba(0,0,0,.4);transform:rotate(2deg);background:#fff;margin:0}
 body.dragging-slot,body.dragging-slot *{cursor:grabbing !important}
 .mgrid .empty{grid-column:1/-1;width:100%}
+
+/* v0.9.5 */
+.chipw.ev{background:#e8f0fb;border:1px solid #316ac5;color:#1b3f7a}
+
+/* v0.10.0 */
+#dexpick{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:rgba(10,18,40,.82);backdrop-filter:blur(6px);color:#fff;padding:16px}
+#dexpick .dpbox{width:min(640px,100%);text-align:center}
+#dexpick .dplogo{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;letter-spacing:.06em;margin-bottom:14px;opacity:.9}
+#dexpick .dplogo img{width:28px;height:28px}
+#dexpick h2{margin:0 0 18px;font-size:24px}
+.dpgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.dpopt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;background:rgba(255,255,255,.1);border:2px solid transparent;border-radius:6px;color:#fff;cursor:pointer;font:inherit}
+.dpopt img{width:48px;height:48px}.dpopt small{opacity:.75;font-size:12px}
+.dpopt:hover,.dpopt:focus-visible{background:rgba(255,255,255,.2);border-color:#5aa0ff;outline:0}
+.dptog{display:inline-flex;align-items:center;gap:10px;margin-top:22px;cursor:pointer;font-size:14px}
+.dptog input{position:absolute;opacity:0}
+.dptog .sw{width:40px;height:22px;border-radius:11px;background:#555;position:relative;transition:background .15s}
+.dptog .sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s}
+.dptog input:checked+.sw{background:#316ac5}.dptog input:checked+.sw::after{left:20px}
+.dptog input:focus-visible+.sw{outline:2px solid #5aa0ff}
+.dphint{margin-top:8px;font-size:12px;opacity:.6}
+@media (max-width:560px){.dpgrid{grid-template-columns:repeat(2,1fr)}#dexpick h2{font-size:19px}}
+.stg{padding:10px}.stgrow{display:flex;gap:8px;align-items:flex-start;padding:6px 0;cursor:pointer}
+.stgrow small{display:block;color:#555}.stgrow input{margin-top:3px}.stnote{margin:2px 0 6px;color:#555}
+.ngen{margin:12px 0 6px;font-size:14px;color:#0b3a8a;border-bottom:1px solid #b5b1a0}
+.ngr{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px}
+.nc{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 3px;border:1px solid #c5c2b2;border-radius:3px;background:#fff;color:#000;font:inherit;text-align:center;min-height:112px}
+.nc.on{cursor:pointer}.nc.on:hover{border-color:#316ac5;background:#eef4ff}
+.nc.off{background:#e4e1d2;color:#777;border-style:dashed}
+.nc .sp{height:64px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.nc .no{font-size:11px;color:#555}.nc b{font-size:12px;line-height:1.2}.nc small{font-size:11px;color:#555}
+
+/* v0.10.1: grouped picker, settings select, National cards, training rows */
+.dpgrid{grid-template-columns:repeat(3,1fr)}
+.dpopt.dpwide{width:100%;flex-direction:row;justify-content:center;gap:12px;padding:14px 10px;text-align:left}
+.dpopt.dpwide b,.dpopt.dpwide small{display:block}
+.dpgame{display:flex;align-items:center;gap:10px;margin:16px 0 10px;font-size:13px;letter-spacing:.04em;opacity:.85}
+.dpgame::before,.dpgame::after{content:"";flex:1;height:1px;background:rgba(255,255,255,.3)}
+#st-def{width:100%;padding:4px;font:inherit;margin-bottom:4px}
+.card.nz{background:#f1efe4}
+.card .nzb{display:inline-block;margin-top:3px;padding:0 6px;font-size:10px;border-radius:8px;background:#999;color:#fff}
+.kvr{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 0;border-bottom:1px dotted #cfcbb8}
+.kvr:last-child{border-bottom:0}.kvr span{color:#444}
+@media (max-width:560px){.dpgrid{grid-template-columns:1fr}.dpopt.dpwide{flex-direction:column;text-align:center}}
+
+/* v0.10.1b */
+.menu{padding-bottom:0;bottom:34px}
+.dpgrid{grid-template-columns:repeat(2,1fr)}
+#st-def:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:560px){.dpgrid{grid-template-columns:1fr}}
+.wbody:focus{outline:0}
+.card:focus-visible{outline:2px solid #316ac5;outline-offset:1px;background:#eef4ff}
